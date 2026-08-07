@@ -1,0 +1,23 @@
+[build]
+  publish = "public"
+
+# Redirect rules for clean HTML URLs
+[[redirects]]
+  from = "/sports"
+  to = "/sports.html"
+  status = 200
+
+[[redirects]]
+  from = "/venues"
+  to = "/venues.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/dashboard.html"
+  status = 200
