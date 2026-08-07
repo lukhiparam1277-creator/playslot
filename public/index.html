@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlaySlot - Book Sports Venues Instantly</title>
+  <meta name="description" content="Book Football Turf, Box Cricket, Pickleball, Badminton, Basketball, and Golf with real-time slot availability.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge badge-success" style="margin-bottom:16px;">🔥 6 Sports Categories Available</div>
+          <h1>Book Sports Venues <span>Instantly</span></h1>
+          <p>Book Football Turf, Box Cricket, Pickleball, Badminton, Basketball, and Golf with real-time slot availability.</p>
+          <div class="hero-btns">
+            <a href="/venues.html" class="btn btn-primary">Book Now ⚡</a>
+            <a href="/sports.html" class="btn btn-outline">Explore Sports 🏆</a>
+          </div>
+        </div>
+        <div class="hero-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80" alt="Sports Arena" class="hero-img">
+          <div class="hero-badge-floating">
+            <span style="font-size:1.8rem;">⚡</span>
+            <div>
+              <h4 style="font-size:0.95rem; font-weight:700;">10,000+ Slots Booked</h4>
+              <p style="font-size:0.8rem; color:var(--text-muted);">Instant Real-Time Booking</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Section Bar -->
+    <div class="container search-section">
+      <div class="search-card">
+        <form action="/venues.html" method="GET" class="search-form">
+          <div class="form-group">
+            <label>🔍 Search Venue</label>
+            <input type="text" name="search" placeholder="Search by venue name or area..." class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label>🏆 Select Sport</label>
+            <select name="sport" id="heroSportSelect" class="form-select">
+              <option value="All">All Sports (6)</option>
+              <option value="Football Turf">⚽ Football Turf</option>
+              <option value="Box Cricket">🏏 Box Cricket</option>
+              <option value="Pickleball">🎾 Pickleball</option>
+              <option value="Badminton">🏸 Badminton</option>
+              <option value="Basketball">🏀 Basketball</option>
+              <option value="Golf">⛳ Golf</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>📍 Select City</label>
+            <select name="city" class="form-select">
+              <option value="All">All Cities</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Bengaluru">Bengaluru</option>
+              <option value="Delhi">Delhi</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>📅 Select Date</label>
+            <input type="date" name="date" id="heroDateInput" class="form-input">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="height:48px; margin-top:22px;">Search 🚀</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Featured Sports Categories Section -->
+    <section class="container" style="margin-bottom:80px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;">
+        <div>
+          <div class="section-title">Sports Categories</div>
+          <div class="section-subtitle" style="margin-bottom:0;">Select from our 6 verified sports categories</div>
+        </div>
+        <a href="/sports.html" class="btn btn-outline">Explore All 6 Sports →</a>
+      </div>
+
+      <div class="sports-grid" id="homeSportsGrid"></div>
+    </section>
+
+    <!-- Featured Venues Section -->
+    <section class="container" style="margin-bottom:90px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px;">
+        <div>
+          <div class="section-title">Featured Venues</div>
+          <div class="section-subtitle" style="margin-bottom:0;">Handpicked high-rated sports turfs & grounds</div>
+        </div>
+        <a href="/venues.html" class="btn btn-outline">View All Venues →</a>
+      </div>
+
+      <div class="venues-grid" id="homeVenuesGrid"></div>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Venues - PlaySlot</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <main class="container" style="padding-top:40px; padding-bottom:80px;">
+    <div class="section-title" id="venuePageTitle">Explore Sports Venues</div>
+    <div class="section-subtitle">Find & book verified turfs and courts with real-time slot availability</div>
+
+    <!-- Search & Filter Controls -->
+    <div class="search-card" style="margin-bottom:40px;">
+      <form id="venueFilterForm" class="search-form" style="grid-template-columns: repeat(4, 1fr) auto;">
+        <div class="form-group">
+          <label>🔍 Search Venue / Area</label>
+          <input type="text" id="filterSearch" placeholder="Venue name or area..." class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>🏆 Sport Category</label>
+          <select id="filterSport" class="form-select">
+            <option value="All">All Sports (6)</option>
+            <option value="Football Turf">⚽ Football Turf</option>
+            <option value="Box Cricket">🏏 Box Cricket</option>
+            <option value="Pickleball">🎾 Pickleball</option>
+            <option value="Badminton">🏸 Badminton</option>
+            <option value="Basketball">🏀 Basketball</option>
+            <option value="Golf">⛳ Golf</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>📍 City</label>
+          <select id="filterCity" class="form-select">
+            <option value="All">All Cities</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Delhi">Delhi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>🏠 Indoor / Outdoor</label>
+          <select id="filterType" class="form-select">
+            <option value="All">All Types</option>
+            <option value="Indoor">Indoor</option>
+            <option value="Outdoor">Outdoor</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="height:48px; margin-top:22px;">Apply 🎯</button>
+      </form>
+
+      <!-- Advanced Filters -->
+      <div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border-color); align-items:center;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.85rem; font-weight:600;">💰 Max Price:</span>
+          <input type="number" id="filterMaxPrice" placeholder="e.g. 1500" class="form-input" style="width:110px; padding:6px 10px; font-size:0.85rem;">
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.85rem; font-weight:600;">⭐ Min Rating:</span>
+          <select id="filterMinRating" class="form-select" style="width:120px; padding:6px 10px; font-size:0.85rem;">
+            <option value="">Any Rating</option>
+            <option value="4.8">★ 4.8+</option>
+            <option value="4.5">★ 4.5+</option>
+            <option value="4.0">★ 4.0+</option>
+          </select>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.85rem; font-weight:600;">📏 Max Distance:</span>
+          <select id="filterMaxDistance" class="form-select" style="width:120px; padding:6px 10px; font-size:0.85rem;">
+            <option value="">Any Distance</option>
+            <option value="2">Within 2 km</option>
+            <option value="5">Within 5 km</option>
+            <option value="10">Within 10 km</option>
+          </select>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.85rem; font-weight:600;">⚡ Sort By:</span>
+          <select id="filterSort" class="form-select" style="width:160px; padding:6px 10px; font-size:0.85rem;">
+            <option value="default">Recommended</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+            <option value="distance">Nearest Distance</option>
+          </select>
+        </div>
+
+        <button id="resetFiltersBtn" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem;">Reset</button>
+      </div>
+    </div>
+
+    <!-- Venues Grid -->
+    <div class="venues-grid" id="venuesGrid"></div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/venues.js"></script>
+</body>
+</html>

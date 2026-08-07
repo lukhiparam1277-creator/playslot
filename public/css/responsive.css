@@ -1,0 +1,103 @@
+/* ==========================================================================
+   PlaySlot Responsive Media Queries (Mobile, Tablet, Desktop)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 2.6rem;
+  }
+
+  .hero-content p {
+    margin: 0 auto 28px auto;
+  }
+
+  .hero-btns {
+    justify-content: center;
+  }
+
+  .search-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-form button {
+    grid-column: span 2;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .gallery-side {
+    display: none;
+  }
+
+  .venue-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-color: #ffffff;
+    flex-direction: column;
+    padding: 40px 24px;
+    align-items: flex-start;
+    gap: 24px;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .mobile-toggle {
+    display: block;
+  }
+
+  .search-form {
+    grid-template-columns: 1fr;
+  }
+
+  .search-form button {
+    grid-column: span 1;
+  }
+
+  .venues-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .admin-sidebar.active {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+}
