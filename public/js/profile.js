@@ -24,8 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="summary-card" style="text-align:center;">
         <img id="profileAvatarImg" src="${user.avatar || '/images/default-avatar.png'}" alt="${user.name}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; margin:0 auto 16px auto; border:4px solid var(--primary-light);">
         <h3 style="font-size:1.3rem; font-weight:700;">${user.name}</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">${user.email}</p>
-        <div class="badge badge-success" style="margin-bottom:24px;">Verified Member</div>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:12px;">${user.email}</p>
+        <div style="margin-bottom:18px;">
+          <span class="badge ${user.role === 'turf_owner' ? 'badge-primary' : 'badge-success'}">
+            ${user.role === 'turf_owner' ? '🏟️ Verified Turf Owner' : '👤 Verified User'}
+          </span>
+        </div>
 
         <div style="background:var(--bg-color); padding:16px; border-radius:12px; text-align:left; margin-bottom:20px;">
           <div style="font-size:0.85rem; color:var(--text-muted);">Total Slots Booked</div>

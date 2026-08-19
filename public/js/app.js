@@ -220,6 +220,15 @@ const PlaySlotApp = {
     if (!container) return;
 
     const user = PlaySlotApp.getUser();
+    let roleNavLinks = '';
+    if (user) {
+      if (user.role === 'turf_owner') {
+        roleNavLinks = '<li><a href="/owner/dashboard.html" class="nav-link" style="color:var(--primary-color); font-weight:700;">🏟️ Turf Panel</a></li>';
+      } else {
+        roleNavLinks = '<li><a href="/my-bookings.html" class="nav-link">My Bookings</a></li>';
+      }
+    }
+
     container.innerHTML = `
       <nav class="navbar">
         <div class="container navbar-container">
@@ -231,15 +240,15 @@ const PlaySlotApp = {
             <li><a href="/index.html" class="nav-link">Home</a></li>
             <li><a href="/sports.html" class="nav-link">Sports</a></li>
             <li><a href="/venues.html" class="nav-link">Venues</a></li>
-            ${user ? '<li><a href="/my-bookings.html" class="nav-link">My Bookings</a></li>' : ''}
+            ${roleNavLinks}
             <li><a href="/contact.html" class="nav-link">Contact</a></li>
           </ul>
 
           <div class="nav-actions">
             ${user ? `
-              <a href="/profile.html" class="user-profile-menu">
+              <a href="${user.role === 'turf_owner' ? '/owner/dashboard.html' : '/profile.html'}" class="user-profile-menu" title="${user.role === 'turf_owner' ? 'Turf Owner Dashboard' : 'User Profile'}">
                 <img src="${user.avatar || '/images/default-avatar.png'}" alt="${user.name}" class="avatar-sm">
-                <span style="font-weight:600; font-size:0.9rem;">${user.name.split(' ')[0]}</span>
+                <span style="font-weight:600; font-size:0.9rem;">${user.name.split(' ')[0]} ${user.role === 'turf_owner' ? '🏟️' : ''}</span>
               </a>
               <button onclick="PlaySlotApp.logout()" class="btn btn-outline" style="padding: 8px 16px; font-size:0.85rem;">Logout</button>
             ` : `
@@ -320,7 +329,7 @@ const PlaySlotApp = {
           <div class="footer-bottom">
             <p>&copy; ${new Date().getFullYear()} PlaySlot. All rights reserved.</p>
             <div>
-              <a href="/admin/login.html" style="color: var(--text-light); font-size:0.85rem;">Admin Portal Access</a>
+              <span style="color: var(--text-light); font-size:0.85rem;">Designed for Sports Enthusiasts & Turf Owners</span>
             </div>
           </div>
         </div>

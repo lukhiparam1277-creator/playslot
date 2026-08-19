@@ -14,36 +14,71 @@
   <main class="auth-wrapper">
     <div class="auth-card">
       <div class="auth-header">
-        <div style="font-size:2.5rem; margin-bottom:8px;">⚽</div>
-        <h2>Welcome Back to PlaySlot</h2>
-        <p style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Login to access real-time sports bookings</p>
+        <div id="authHeaderIcon" style="font-size:2.5rem; margin-bottom:8px;">⚽</div>
+        <h2 id="authHeading">Welcome Back to PlaySlot</h2>
+        <p id="authSubheading" style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">Sign in to access your sports booking account</p>
+      </div>
+
+      <!-- Role Selection Component (Strictly USER & TURF OWNER) -->
+      <div class="role-selector-container">
+        <span class="role-selector-title">Continue as</span>
+        <div class="role-selector-grid">
+          <button type="button" class="role-btn active" id="roleBtnUser" data-role="user">
+            <span class="role-icon">👤</span>
+            <span class="role-title">USER</span>
+            <span class="role-desc">Book slots & venues</span>
+          </button>
+          <button type="button" class="role-btn" id="roleBtnOwner" data-role="turf_owner">
+            <span class="role-icon">🏟️</span>
+            <span class="role-title">TURF OWNER</span>
+            <span class="role-desc">Manage turfs & bookings</span>
+          </button>
+        </div>
       </div>
 
       <div id="authAlertContainer"></div>
 
       <form id="loginForm">
+        <!-- Hidden input for selected role -->
+        <input type="hidden" id="selectedRole" value="user">
+
         <div class="form-group" style="margin-bottom:18px;">
-          <label>📧 Email Address</label>
-          <input type="email" id="loginEmail" class="form-input" placeholder="e.g. user@playslot.com" required>
+          <label id="emailLabel">📧 Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="e.g. user@playslot.com" required autocomplete="email">
         </div>
 
         <div class="form-group" style="margin-bottom:18px;">
           <label>🔒 Password</label>
-          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; font-size:0.88rem;">
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-            <input type="checkbox" id="rememberMe"> Remember Me
+            <input type="checkbox" id="rememberMe" checked> Remember Me
           </label>
           <a href="#" style="color:var(--primary-color); font-weight:600;" onclick="alert('Demo password reset link has been dispatched to your email.'); return false;">Forgot Password?</a>
         </div>
 
-        <button type="submit" class="btn btn-primary" style="width:100%; height:48px; font-size:1rem;">Login to Account 🚀</button>
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width:100%; height:48px; font-size:1rem;">Login as User 🚀</button>
       </form>
 
+      <!-- Quick Demo Account Switcher -->
+      <div style="margin-top:20px; padding:12px 14px; background:var(--bg-color); border:1px dashed var(--border-color); border-radius:var(--border-radius-sm); font-size:0.82rem; color:var(--text-muted);">
+        <div style="font-weight:700; color:var(--text-dark); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+          <span>⚡ Quick Demo Credentials:</span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">
+          <button type="button" id="fillUserDemoBtn" class="badge" style="background:#E0F2FE; color:#0369A1; border:none; cursor:pointer; padding:5px 10px; font-weight:600;">
+            👤 User: user@playslot.com
+          </button>
+          <button type="button" id="fillOwnerDemoBtn" class="badge" style="background:#FEF3C7; color:#B45309; border:none; cursor:pointer; padding:5px 10px; font-weight:600;">
+            🏟️ Turf Owner: owner@playslot.com
+          </button>
+        </div>
+      </div>
+
       <div style="text-align:center; margin-top:24px; font-size:0.9rem; color:var(--text-muted);">
-        Don't have an account? <a href="/register.html" style="color:var(--primary-color); font-weight:700;">Register Here</a>
+        Don't have an account? <a href="/register.html" id="registerLink" style="color:var(--primary-color); font-weight:700;">Register Here</a>
       </div>
     </div>
   </main>
