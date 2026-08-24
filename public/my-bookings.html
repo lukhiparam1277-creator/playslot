@@ -4,31 +4,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings - PlaySlot</title>
+  <meta name="description" content="View and manage all your sports turf slot reservations on PlaySlot.">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/responsive.css">
 </head>
 <body>
 
+  <!-- Navigation Bar -->
   <div id="navbar-container"></div>
 
   <main class="container" style="padding-top:40px; padding-bottom:80px;">
-    <div class="section-title">My Bookings</div>
-    <div class="section-subtitle">Manage all your upcoming and past sports slot reservations</div>
-
-    <!-- Booking Tabs -->
-    <div style="display:flex; gap:12px; margin-bottom:32px; border-bottom:1px solid var(--border-color); padding-bottom:12px;">
-      <button class="btn booking-tab-btn active" data-tab="upcoming">Upcoming (<span id="upcomingCount">0</span>)</button>
-      <button class="btn booking-tab-btn btn-outline" data-tab="completed">Completed (<span id="completedCount">0</span>)</button>
-      <button class="btn booking-tab-btn btn-outline" data-tab="cancelled">Cancelled (<span id="cancelledCount">0</span>)</button>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div class="section-title">My Bookings</div>
+        <div class="section-subtitle" style="margin-bottom:0;">Manage and track all your upcoming and past turf slot reservations</div>
+      </div>
+      <a href="/venues.html" class="btn btn-primary">+ Book New Slot</a>
     </div>
 
+    <!-- Booking Tabs -->
+    <div style="display:flex; gap:12px; margin-bottom:32px; border-bottom:1px solid var(--border-color); padding-bottom:12px; flex-wrap:wrap;">
+      <button class="btn booking-tab-btn active" data-tab="upcoming">
+        Upcoming (<span id="upcomingCount">0</span>)
+      </button>
+      <button class="btn booking-tab-btn btn-outline" data-tab="completed">
+        Completed (<span id="completedCount">0</span>)
+      </button>
+      <button class="btn booking-tab-btn btn-outline" data-tab="cancelled">
+        Cancelled (<span id="cancelledCount">0</span>)
+      </button>
+    </div>
+
+    <!-- Bookings List Container -->
     <div id="myBookingsList">
-      <!-- Rendered by my-bookings.js -->
+      <!-- Rendered dynamically by my-bookings.js -->
     </div>
   </main>
 
+  <!-- Footer -->
   <div id="footer-container"></div>
 
+  <!-- Scripts -->
+  <script src="/js/data/mock-data.js"></script>
   <script src="/js/app.js"></script>
   <script src="/js/my-bookings.js"></script>
 </body>

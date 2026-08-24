@@ -1,130 +1,141 @@
-// PlaySlot Venues Listing Script
+/**
+ * PlaySlot Turf Listing & Multi-Filter Engine
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('venuesGrid');
-  const sportSelect = document.getElementById('filterSport');
-  const form = document.getElementById('venueFilterForm');
+  if (!window.PlaySlotData) return;
+
+  const venuesGrid = document.getElementById('venuesGrid');
+  const filterForm = document.getElementById('venueFilterForm');
+  const filterSearch = document.getElementById('filterSearch');
+  const filterSport = document.getElementById('filterSport');
+  const filterCity = document.getElementById('filterCity');
+  const filterType = document.getElementById('filterType');
+  const filterMaxPrice = document.getElementById('filterMaxPrice');
+  const filterMinRating = document.getElementById('filterMinRating');
+  const filterMaxDistance = document.getElementById('filterMaxDistance');
+  const filterSort = document.getElementById('filterSort');
+  const filterAvailToday = document.getElementById('filterAvailToday');
   const resetBtn = document.getElementById('resetFiltersBtn');
+  const totalTurfsCount = document.getElementById('totalTurfsCount');
 
-  if (!container) return;
-
-  // Get URL Params
+  // URL Query Parameters pre-fill
   const urlParams = new URLSearchParams(window.location.search);
-  const initialSport = urlParams.get('sport') || 'All';
-  const initialSearch = urlParams.get('search') || '';
-  const initialCity = urlParams.get('city') || 'All';
+  if (urlParams.get('sport') && filterSport) filterSport.value = urlParams.get('sport');
+  if (urlParams.get('city') && filterCity) filterCity.value = urlParams.get('city');
+  if (urlParams.get('search') && filterSearch) filterSearch.value = urlParams.get('search');
 
-  if (sportSelect && initialSport !== 'All') sportSelect.value = initialSport;
-  if (document.getElementById('filterSearch')) document.getElementById('filterSearch').value = initialSearch;
-  if (document.getElementById('filterCity')) document.getElementById('filterCity').value = initialCity;
+  function renderTurfs() {
+    if (!venuesGrid) return;
 
-  function renderVenues() {
-    const search = (document.getElementById('filterSearch')?.value || '').toLowerCase().trim();
-    const sport = document.getElementById('filterSport')?.value || 'All';
-    const city = document.getElementById('filterCity')?.value || 'All';
-    const type = document.getElementById('filterType')?.value || 'All';
-    const maxPrice = parseFloat(document.getElementById('filterMaxPrice')?.value || 0);
-    const minRating = parseFloat(document.getElementById('filterMinRating')?.value || 0);
-    const maxDistance = parseFloat(document.getElementById('filterMaxDistance')?.value || 0);
-    const sort = document.getElementById('filterSort')?.value || 'default';
+    const filters = {
+      search: filterSearch ? filterSearch.value.trim() : '',
+      sport: filterSport ? filterSport.value : 'All',
+      city: filterCity ? filterCity.value : 'All',
+      turfType: filterType ? filterType.value : 'All',
+      maxPrice: filterMaxPrice && filterMaxPrice.value ? filterMaxPrice.value : null,
+      minRating: filterMinRating && filterMinRating.value ? filterMinRating.value : null,
+      sort: filterSort ? filterSort.value : 'default',
+      availableToday: filterAvailToday ? filterAvailToday.checked : false
+    };
 
-    let list = [...PlaySlotApp.venues];
+    let turfs = window.PlaySlotData.getTurfs(filters);
 
-    if (sport !== 'All') {
-      list = list.filter(v => v.sportName.toLowerCase() === sport.toLowerCase());
-    }
-    if (city !== 'All') {
-      list = list.filter(v => v.city.toLowerCase() === city.toLowerCase());
-    }
-    if (type !== 'All') {
-      list = list.filter(v => v.venueType === type);
-    }
-    if (maxPrice > 0) {
-      list = list.filter(v => v.pricePerHour <= maxPrice);
-    }
-    if (minRating > 0) {
-      list = list.filter(v => v.rating >= minRating);
-    }
-    if (maxDistance > 0) {
-      list = list.filter(v => v.distanceVal <= maxDistance);
-    }
-    if (search) {
-      list = list.filter(v => 
-        v.name.toLowerCase().includes(search) || 
-        v.location.toLowerCase().includes(search) || 
-        v.sportName.toLowerCase().includes(search)
-      );
+    if (filterMaxDistance && filterMaxDistance.value) {
+      const maxDist = parseFloat(filterMaxDistance.value);
+      turfs = turfs.filter(t => t.distanceKm <= maxDist);
     }
 
-    // Sort
-    if (sort === 'price_low') {
-      list.sort((a, b) => a.pricePerHour - b.pricePerHour);
-    } else if (sort === 'price_high') {
-      list.sort((a, b) => b.pricePerHour - a.pricePerHour);
-    } else if (sort === 'rating') {
-      list.sort((a, b) => b.rating - a.rating);
-    } else if (sort === 'distance') {
-      list.sort((a, b) => a.distanceVal - b.distanceVal);
+    if (totalTurfsCount) {
+      totalTurfsCount.textContent = turfs.length;
     }
 
-    if (list.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state" style="grid-column:1/-1;">
+    if (turfs.length === 0) {
+      venuesGrid.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-icon">🏟️</div>
-          <h3>No Venues Found</h3>
-          <p style="color:var(--text-muted);">Try clearing or adjusting your search filters.</p>
+          <h3>No Turfs Found</h3>
+          <p style="color:var(--text-muted); margin-top:6px;">Try clearing filters or searching for another sport or location.</p>
+          <button onclick="document.getElementById('resetFiltersBtn').click()" class="btn btn-primary" style="margin-top:18px;">Reset All Filters</button>
         </div>
       `;
       return;
     }
 
-    container.innerHTML = list.map(v => `
+    venuesGrid.innerHTML = turfs.map(turf => `
       <div class="venue-card">
         <div class="venue-img-wrapper">
-          <img src="${v.images[0]}" alt="${v.name}">
-          <button class="fav-btn" title="Add to Favorites">❤️</button>
-          <div style="position:absolute; bottom:12px; left:12px;" class="badge badge-success">Available Today</div>
+          <img src="${turf.images[0]}" alt="${turf.name}" loading="lazy">
+          <button class="fav-btn" onclick="PlaySlotApp.showToast('Added ${turf.name} to favorites! ❤️')">❤️</button>
+          <div style="position:absolute; bottom:12px; left:12px;" class="badge badge-success">● Available Today</div>
         </div>
         <div class="venue-info">
-          <div class="venue-name" style="font-size:1.1rem; font-weight:700; color:#0F172A; margin-bottom:4px;">${v.name}</div>
-          <div class="venue-meta" style="font-size:0.88rem; color:#64748B; margin-bottom:12px;">
-            <span>${v.distance} • ${v.city}</span>
+          <div class="venue-name">${turf.name}</div>
+          <div class="venue-meta">
+            <span>📍 ${turf.location}, ${turf.city}</span>
+            <span>•</span>
+            <span style="color:var(--primary-color); font-weight:700;">${turf.distance}</span>
           </div>
-          <div style="display:flex; gap:8px; align-items:center; margin-bottom:16px;">
-            <span class="badge" style="background:#F1F5F9; color:#475569; border-radius:12px; padding:4px 12px; font-size:0.8rem; font-weight:600;">${v.sportName}</span>
-            <span class="badge" style="background:#F1F5F9; color:#475569; border-radius:12px; padding:4px 12px; font-size:0.8rem; font-weight:600;">${v.venueType}</span>
+
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+            ${(turf.sportsAvailable || [turf.sport]).map(sp => `
+              <span class="badge badge-primary" style="font-size:0.75rem;">${sp}</span>
+            `).join('')}
+            <span class="badge badge-dark" style="font-size:0.75rem;">${turf.turfType}</span>
           </div>
+
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:0.85rem;">
+            <span class="badge badge-warning">★ ${turf.rating}</span>
+            <span style="color:var(--text-muted);">(${turf.reviewsCount} reviews)</span>
+            <span style="margin-left:auto; color:#059669; font-weight:700; font-size:0.82rem;">⚡ ${turf.slotTimings.length} Slots</span>
+          </div>
+
           <div class="venue-footer">
             <div class="price-tag">
-              <span class="amount">₹${v.pricePerHour}</span>
+              <span class="amount">₹${turf.pricePerHour}</span>
               <span class="unit">per hour</span>
             </div>
-            <a href="/venue-detail.html?id=${v._id}" class="btn btn-primary" style="padding:10px 18px; font-size:0.88rem;">Book Slot</a>
+            <a href="/venue-detail.html?id=${turf.id}" class="btn btn-emerald">
+              View Details ➔
+            </a>
           </div>
         </div>
       </div>
     `).join('');
   }
 
-  if (form) {
-    form.addEventListener('submit', (e) => {
+  // Event Listeners
+  if (filterForm) {
+    filterForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      renderVenues();
+      renderTurfs();
     });
   }
+
+  [filterSearch, filterSport, filterCity, filterType, filterMaxPrice, filterMinRating, filterMaxDistance, filterSort, filterAvailToday].forEach(el => {
+    if (el) {
+      el.addEventListener('change', renderTurfs);
+      if (el.tagName === 'INPUT' && el.type === 'text') {
+        el.addEventListener('input', renderTurfs);
+      }
+    }
+  });
 
   if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (document.getElementById('filterSearch')) document.getElementById('filterSearch').value = '';
-      if (document.getElementById('filterSport')) document.getElementById('filterSport').value = 'All';
-      if (document.getElementById('filterCity')) document.getElementById('filterCity').value = 'All';
-      if (document.getElementById('filterType')) document.getElementById('filterType').value = 'All';
-      if (document.getElementById('filterMaxPrice')) document.getElementById('filterMaxPrice').value = '';
-      if (document.getElementById('filterMinRating')) document.getElementById('filterMinRating').value = '';
-      if (document.getElementById('filterMaxDistance')) document.getElementById('filterMaxDistance').value = '';
-      if (document.getElementById('filterSort')) document.getElementById('filterSort').value = 'default';
-      renderVenues();
+    resetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (filterSearch) filterSearch.value = '';
+      if (filterSport) filterSport.value = 'All';
+      if (filterCity) filterCity.value = 'All';
+      if (filterType) filterType.value = 'All';
+      if (filterMaxPrice) filterMaxPrice.value = '';
+      if (filterMinRating) filterMinRating.value = '';
+      if (filterMaxDistance) filterMaxDistance.value = '';
+      if (filterSort) filterSort.value = 'default';
+      if (filterAvailToday) filterAvailToday.checked = false;
+      renderTurfs();
     });
   }
 
-  renderVenues();
+  renderTurfs();
 });

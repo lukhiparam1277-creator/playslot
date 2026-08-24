@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login - PlaySlot</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="background:#0F172A;">
+
+  <main class="auth-wrapper" style="min-height:100vh;">
+    <div class="auth-card" style="background:#1E293B; border-color:rgba(255,255,255,0.1); color:#FFFFFF;">
+      <div class="auth-header">
+        <div class="logo-badge" style="width:52px; height:52px; margin:0 auto 14px auto; font-size:1.8rem; background:linear-gradient(135deg, var(--accent-purple), #6D28D9);">🛡️</div>
+        <h2 style="color:#FFFFFF; font-size:1.7rem; font-weight:900;">PlaySlot Admin</h2>
+        <p style="color:var(--text-light); font-size:0.9rem; margin-top:4px;">
+          Super Administrator Control Portal
+        </p>
+      </div>
+
+      <!-- Quick Demo Admin Autofill -->
+      <div style="background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.2); padding:12px 14px; border-radius:10px; margin-bottom:20px; font-size:0.85rem; color:var(--text-light);">
+        <span style="font-weight:700; color:#FFFFFF;">⚡ Demo Administrator Credentials:</span><br>
+        <code style="color:#A78BFA; font-weight:600;">admin@playslot.com</code> / <code>admin123</code>
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label style="color:var(--text-light);">📧 Admin Email</label>
+          <input type="email" id="adminEmail" class="form-input" value="admin@playslot.com" required style="background:#0F172A; color:#FFFFFF; border-color:rgba(255,255,255,0.15);">
+        </div>
+
+        <div class="form-group" style="margin-bottom:22px;">
+          <label style="color:var(--text-light);">🔒 Password</label>
+          <input type="password" id="adminPassword" class="form-input" value="admin123" required style="background:#0F172A; color:#FFFFFF; border-color:rgba(255,255,255,0.15);">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; height:50px; font-size:1.05rem; background:linear-gradient(135deg, var(--accent-purple), #6D28D9);">
+          Admin Login 🛡️
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:24px; font-size:0.85rem; color:var(--text-light);">
+        Restricted System Access • IP & Session Logged
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="/js/data/mock-data.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/admin-login.js"></script>
+</body>
+</html>

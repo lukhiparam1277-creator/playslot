@@ -1,4 +1,26 @@
-/sports   /sports.html   200
-/venues   /venues.html   200
-/contact  /contact.html  200
-/owner    /owner/dashboard.html 200
+# PlaySlot Netlify URL Redirects
+# Public Pages
+/sports        /sports.html          200
+/turfs         /venues.html          200
+/venues        /venues.html          200
+/contact       /contact.html         200
+
+# User Auth
+/login         /login.html           200
+/register      /register.html        200
+
+# User Dashboard
+/user/dashboard        /user/dashboard.html         200
+/user/bookings         /my-bookings.html            200
+
+# Turf Owner Application Lifecycle
+/owner/apply           /owner/apply.html            200
+/owner/status          /owner/status.html           200
+/owner/login           /owner/login.html            200
+/owner/dashboard       /owner/dashboard.html        200
+
+# Hidden Super Admin Portal
+/admin                 /admin/login.html            200
+/admin/login           /admin/login.html            200
+/admin/dashboard       /admin/dashboard.html        200
+/admin/owner-requests  /admin/owner-requests.html   200

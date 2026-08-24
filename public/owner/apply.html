@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List Your Turf on PlaySlot - Turf Partner Application</title>
+  <meta name="description" content="Submit your turf arena details. Our team will review your application before granting owner portal access.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <div id="navbar-container"></div>
+
+  <main class="container" style="padding-top:40px; padding-bottom:80px; max-width:860px;">
+    <div style="text-align:center; margin-bottom:32px;">
+      <span class="badge badge-success" style="margin-bottom:10px; font-size:0.82rem;">PLAYSLOT TURF PARTNER PROGRAM</span>
+      <h1 style="font-size:2.2rem; font-weight:900;">List Your Turf on PlaySlot</h1>
+      <p style="color:var(--text-muted); font-size:1rem; max-width:600px; margin:8px auto 0 auto;">
+        Submit your details. Our team will review your application before giving you owner access.
+      </p>
+    </div>
+
+    <div class="summary-card">
+      <form id="ownerApplicationForm">
+        <!-- 1. Owner Information -->
+        <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:16px; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+          👤 Owner Information
+        </h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="appOwnerName" class="form-input" placeholder="e.g. Kunal Bansal" required>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="appEmail" class="form-input" placeholder="e.g. kunal.turf@example.com" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:28px;">
+          <label>Mobile Number *</label>
+          <input type="tel" id="appPhone" class="form-input" placeholder="e.g. +91 98330 11223" required>
+        </div>
+
+        <!-- 2. Turf Information -->
+        <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:16px; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+          🏟️ Turf Information
+        </h3>
+        <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-group">
+            <label>Turf Name *</label>
+            <input type="text" id="appTurfName" class="form-input" placeholder="e.g. Apex Arena Multi-Sport Ground" required>
+          </div>
+          <div class="form-group">
+            <label>Turf Type *</label>
+            <select id="appTurfType" class="form-select" required>
+              <option value="Outdoor">Outdoor</option>
+              <option value="Indoor">Indoor</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-group">
+            <label>City *</label>
+            <select id="appCity" class="form-select" required>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Bengaluru">Bengaluru</option>
+              <option value="Delhi">Delhi / Gurugram</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Area / Locality *</label>
+            <input type="text" id="appArea" class="form-input" placeholder="e.g. Malad West" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Complete Turf Address *</label>
+          <input type="text" id="appAddress" class="form-input" placeholder="e.g. Opposite Inorbit Mall, Link Road, Malad West" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom:28px;">
+          <label style="margin-bottom:8px;">Sports Supported (Check all that apply) *</label>
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Cricket" checked> 🏏 Cricket
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Football" checked> ⚽ Football
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Badminton"> 🏸 Badminton
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Basketball"> 🏀 Basketball
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Tennis"> 🎾 Tennis
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Volleyball"> 🏐 Volleyball
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Box Cricket" checked> 🏟️ Box Cricket
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="sport" value="Pickleball"> 🏓 Pickleball
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Turf Specifications & Amenities -->
+        <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:16px; color:var(--primary-color); border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+          ⚡ Turf Details & Pricing
+        </h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div class="form-group">
+            <label>Price Per Hour (₹) *</label>
+            <input type="number" id="appPrice" class="form-input" placeholder="e.g. 1350" value="1350" required>
+          </div>
+          <div class="form-group">
+            <label>Opening Time *</label>
+            <input type="text" id="appOpen" class="form-input" value="06:00 AM" placeholder="06:00 AM" required>
+          </div>
+          <div class="form-group">
+            <label>Closing Time *</label>
+            <input type="text" id="appClose" class="form-input" value="11:30 PM" placeholder="11:30 PM" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Description of Ground *</label>
+          <textarea id="appDesc" class="form-textarea" rows="3" placeholder="Artificial turf density, lighting details, dimensions..." required>High-density 40mm imported turf grass for 6v6 football and box cricket with LED floodlights.</textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom:18px;">
+          <label>Turf Image URL</label>
+          <input type="text" id="appImage" class="form-input" placeholder="https://images.unsplash.com/photo-..." value="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80">
+        </div>
+
+        <div class="form-group" style="margin-bottom:28px;">
+          <label style="margin-bottom:8px;">Player Facilities Available</label>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Parking" checked> 🚗 Parking
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Washroom" checked> 🚿 Washroom
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Changing Room" checked> 👕 Changing Room
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Drinking Water" checked> 💧 Drinking Water
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Flood Lights" checked> 💡 Flood Lights
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Seating" checked> 🪑 Seating
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" name="facility" value="Equipment Rental"> 🏏 Equipment Rental
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-emerald btn-lg" style="width:100%;">
+          Submit Application 🚀
+        </button>
+      </form>
+
+      <!-- Bottom Partner Links -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:28px; padding-top:20px; border-top:1px solid var(--border-color); font-size:0.9rem; flex-wrap:wrap; gap:12px;">
+        <div>
+          Already submitted an application? <a href="/owner/status" style="color:var(--primary-color); font-weight:800;">Check Status</a>
+        </div>
+        <div>
+          Already an Approved Partner? <a href="/owner/login" style="color:var(--secondary-color); font-weight:800;">Partner Login ➔</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/data/mock-data.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/owner-apply.js"></script>
+</body>
+</html>
