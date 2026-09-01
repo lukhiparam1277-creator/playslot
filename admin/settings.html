@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Settings - PlaySlot Admin</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Admin Sidebar -->
+    <div id="admin-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2>Platform Settings & Config</h2>
+        </div>
+      </header>
+
+      <div class="dash-body" style="max-width:880px;">
+        
+        <div class="card">
+          <h3 style="margin-bottom:20px;">System & Business Parameters</h3>
+          
+          <form id="adminSettingsForm">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Platform Name</label>
+                <input type="text" class="form-input" value="PlaySlot Sports Network">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Support Email</label>
+                <input type="email" class="form-input" value="support@playslot.app">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Platform Commission Rate (%)</label>
+                <input type="number" class="form-input" value="5" min="0" max="30">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cancellation Cut-Off Window (Hours)</label>
+                <input type="number" class="form-input" value="4" min="1" max="48">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Supported Operational Cities</label>
+              <input type="text" class="form-input" value="Mumbai, Bengaluru, Delhi / NCR, Hyderabad, Pune">
+            </div>
+
+            <div style="margin:20px 0; padding:16px; background:var(--bg-main); border-radius:var(--radius-md); display:flex; flex-direction:column; gap:12px;">
+              <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer;">
+                <input type="checkbox" checked> Auto-approve verified turf partner applications
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer;">
+                <input type="checkbox" checked> Send automated SMS/Email match passes upon payment
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-weight:600; cursor:pointer;">
+                <input type="checkbox" checked> Enable instant refund engine for customer cancellations
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-accent" style="margin-top:10px;">
+              Save Platform Configuration 💾
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initAdminSidebar, showToast } from '../js/common.js';
+
+    initAdminSidebar('settings');
+
+    document.getElementById('adminSettingsForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showToast('Platform settings saved successfully!', 'success');
+    });
+  </script>
+</body>
+</html>

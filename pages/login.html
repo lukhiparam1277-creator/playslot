@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Login - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body>
+
+  <!-- Dynamic Navigation Bar -->
+  <div id="navbar-container"></div>
+
+  <main class="main-content" style="display:flex; align-items:center; justify-content:center; padding:50px 20px;">
+    <div class="card" style="max-width:460px; width:100%;">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div class="logo-icon" style="width:48px; height:48px; margin:0 auto 12px auto; font-size:1.5rem;">⚡</div>
+        <h2 style="font-size:1.8rem; margin-bottom:6px;">Welcome Back!</h2>
+        <p style="font-size:0.9rem;">Sign in to your PlaySlot account to manage your reservations.</p>
+      </div>
+
+      <!-- Quick Fill Demo Accounts Helper -->
+      <div style="background:var(--primary-light); padding:12px 14px; border-radius:var(--radius-md); margin-bottom:20px; font-size:0.82rem;">
+        <strong style="color:var(--primary);">💡 Quick Fill Demo Accounts:</strong>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm" id="fillUser1" style="font-size:0.75rem; padding:4px 8px;">Alex Morgan (Player)</button>
+          <button class="btn btn-secondary btn-sm" id="fillUser2" style="font-size:0.75rem; padding:4px 8px;">David Chen (Player)</button>
+        </div>
+      </div>
+
+      <form id="userLoginForm">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="loginEmailInput" class="form-input" placeholder="e.g. alex@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label class="form-label">Password</label>
+            <a href="#" id="forgotPasswordLink" style="font-size:0.8rem; color:var(--primary); font-weight:600;">Forgot Password?</a>
+          </div>
+          <input type="password" id="loginPasswordInput" class="form-input" placeholder="••••••••" value="password123" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-full" id="loginSubmitBtn" style="margin-top:10px;">
+          Log In ➔
+        </button>
+      </form>
+
+      <div style="text-align:center; margin-top:20px; font-size:0.88rem; color:var(--text-muted);">
+        Don't have a PlaySlot account? <a href="register.html" style="color:var(--primary); font-weight:700;">Sign Up Free</a>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--border-color); margin:20px 0;">
+
+      <div style="text-align:center; font-size:0.82rem; color:var(--text-muted);">
+        Are you a turf owner? <a href="../owner/login.html" style="color:var(--accent); font-weight:700;">Turf Owner Portal ➔</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Dynamic Footer -->
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { initNavbar, initFooter, showToast } from '../js/common.js';
+    import { AuthService } from '../js/services/authService.js';
+
+    await initNavbar();
+    initFooter();
+
+    document.getElementById('fillUser1')?.addEventListener('click', () => {
+      document.getElementById('loginEmailInput').value = 'alex@example.com';
+    });
+    document.getElementById('fillUser2')?.addEventListener('click', () => {
+      document.getElementById('loginEmailInput').value = 'david.c@example.com';
+    });
+
+    document.getElementById('forgotPasswordLink')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast('Password reset link simulated: Please check your inbox', 'info');
+    });
+
+    document.getElementById('userLoginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmailInput').value;
+      const pass = document.getElementById('loginPasswordInput').value;
+      const btn = document.getElementById('loginSubmitBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = 'Verifying...';
+
+      try {
+        await AuthService.loginUser(email, pass);
+        showToast('Welcome back to PlaySlot! 🎉', 'success');
+        setTimeout(() => window.location.href = '../index.html', 500);
+      } catch (err) {
+        showToast(err.message, 'danger');
+        btn.disabled = false;
+        btn.innerHTML = 'Log In ➔';
+      }
+    });
+  </script>
+</body>
+</html>

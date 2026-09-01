@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Bookings Ledger - PlaySlot Admin</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Admin Sidebar -->
+    <div id="admin-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2>Master Bookings Ledger</h2>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        
+        <!-- Action Toolbar -->
+        <div class="action-toolbar">
+          <div class="search-input-group">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="adminBookingSearchInput" class="form-input" placeholder="Search by customer, arena, or ID...">
+          </div>
+
+          <select id="adminBookingStatusFilter" class="form-select" style="width:auto;">
+            <option value="All">All Booking Statuses</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Player</th>
+                  <th>Turf Partner</th>
+                  <th>Sports Arena</th>
+                  <th>Sport</th>
+                  <th>Date & Time</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTbody">
+                <!-- Rendered by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { AdminController } from '../js/admin.js';
+    AdminController.initBookings();
+  </script>
+</body>
+</html>

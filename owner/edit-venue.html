@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Venue - Owner Portal - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Owner Sidebar -->
+    <div id="owner-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2 id="formTitle">Edit Venue</h2>
+        </div>
+
+        <div class="dash-header-actions">
+          <a href="venues.html" class="btn btn-outline btn-sm">← Back to Venues</a>
+        </div>
+      </header>
+
+      <div class="dash-body" style="max-width:900px;">
+        <div class="card">
+          <form id="venueForm">
+            
+            <h3 style="margin-bottom:16px;">1. Basic Venue Information</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Venue Name</label>
+                <input type="text" id="venueNameInput" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hourly Rate (₹ INR)</label>
+                <input type="number" id="venueRateInput" class="form-input" min="200" required>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <select id="venueCitySelect" class="form-select">
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Bengaluru">Bengaluru</option>
+                  <option value="Delhi">Delhi / NCR</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Area / Neighborhood</label>
+                <input type="text" id="venueAreaInput" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Full Street Address</label>
+              <textarea id="venueAddressInput" class="form-textarea" style="min-height:70px;" required></textarea>
+            </div>
+
+            <h3 style="margin:24px 0 16px 0;">2. Sports & Facilities</h3>
+
+            <div class="form-group">
+              <label class="form-label">Sports Available</label>
+              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; font-size:0.9rem;">
+                <label><input type="checkbox" name="venueSports" value="Football"> ⚽ Football</label>
+                <label><input type="checkbox" name="venueSports" value="Box Cricket"> ⚡ Box Cricket</label>
+                <label><input type="checkbox" name="venueSports" value="Cricket"> 🏏 Cricket</label>
+                <label><input type="checkbox" name="venueSports" value="Badminton"> 🏸 Badminton</label>
+                <label><input type="checkbox" name="venueSports" value="Pickleball"> 🏓 Pickleball</label>
+                <label><input type="checkbox" name="venueSports" value="Basketball"> 🏀 Basketball</label>
+                <label><input type="checkbox" name="venueSports" value="Golf"> ⛳ Golf</label>
+                <label><input type="checkbox" name="venueSports" value="8 Ball Pool"> 🎱 8 Ball Pool</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Ground Amenities</label>
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; font-size:0.9rem;">
+                <label><input type="checkbox" name="venueFacilities" value="Parking"> 🚗 Parking</label>
+                <label><input type="checkbox" name="venueFacilities" value="Washroom"> 🚻 Washroom</label>
+                <label><input type="checkbox" name="venueFacilities" value="Drinking Water"> 💧 Drinking Water</label>
+                <label><input type="checkbox" name="venueFacilities" value="Changing Room"> 👕 Changing Room</label>
+                <label><input type="checkbox" name="venueFacilities" value="Flood Lights"> 💡 Flood Lights</label>
+                <label><input type="checkbox" name="venueFacilities" value="Equipment Rental"> 🎾 Rental Gear</label>
+                <label><input type="checkbox" name="venueFacilities" value="Air Conditioned"> ❄️ AC Lounge</label>
+              </div>
+            </div>
+
+            <h3 style="margin:24px 0 16px 0;">3. Timing & Media</h3>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Opening Time</label>
+                <input type="text" id="venueOpenTimeInput" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Closing Time</label>
+                <input type="text" id="venueCloseTimeInput" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contact Number</label>
+                <input type="tel" id="venuePhoneInput" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Banner Image URL</label>
+              <input type="url" id="venueBannerInput" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Venue Description</label>
+              <textarea id="venueDescInput" class="form-textarea" required></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+              <a href="venues.html" class="btn btn-outline">Cancel</a>
+              <button type="submit" class="btn btn-primary btn-lg">Update Changes 💾</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { OwnerController } from '../js/owner.js';
+    OwnerController.initVenueForm(true);
+  </script>
+</body>
+</html>

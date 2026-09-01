@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookings Ledger - Owner Portal - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Owner Sidebar -->
+    <div id="owner-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2>Match Bookings</h2>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        
+        <!-- Filter Toolbar -->
+        <div class="card" style="margin-bottom:24px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="bookingSearchInput" placeholder="Search customer, ID, or arena..." class="form-input" style="min-width:260px;">
+
+            <select id="bookingStatusFilter" class="form-select" style="width:auto;">
+              <option value="All">All Statuses</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div style="font-size:0.85rem; color:var(--text-muted);">
+            ⚡ Real-time customer reservation sync
+          </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer Info</th>
+                  <th>Arena</th>
+                  <th>Sport</th>
+                  <th>Date</th>
+                  <th>Time Slot</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ownerBookingsTbody">
+                <!-- Rendered by owner.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { OwnerController } from '../js/owner.js';
+    OwnerController.initBookingsLedger();
+  </script>
+</body>
+</html>

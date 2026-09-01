@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List Your Turf - Partner Application - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+</head>
+<body style="background:var(--bg-main);">
+
+  <!-- Public Navbar -->
+  <div id="navbar-container"></div>
+
+  <main class="main-content" style="padding:40px 20px 80px 20px;">
+    <div class="container" style="max-width:760px;">
+      
+      <div style="text-align:center; margin-bottom:32px;">
+        <span class="badge badge-success" style="margin-bottom:8px;">PARTNER ONBOARDING</span>
+        <h1 style="font-size:2.2rem; margin-bottom:8px;">Apply to List Your Turf Arena</h1>
+        <p style="font-size:0.95rem;">Join India's largest sports venue network. Start receiving online slot bookings.</p>
+      </div>
+
+      <div class="card">
+        <form id="ownerApplicationForm">
+          <h3 style="margin-bottom:16px;">1. Business & Contact Information</h3>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label">Full Name of Owner / Manager</label>
+              <input type="text" id="appOwnerName" class="form-input" placeholder="e.g. Karan Sharma" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Registered Business / Arena Name</label>
+              <input type="text" id="appBusinessName" class="form-input" placeholder="e.g. Apex Sports Club" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label">Official Email</label>
+              <input type="email" id="appEmail" class="form-input" placeholder="owner@arena.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="appPhone" class="form-input" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+
+          <h3 style="margin:24px 0 16px 0;">2. Turf Location & Details</h3>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <select id="appCity" class="form-select">
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bengaluru">Bengaluru</option>
+                <option value="Delhi">Delhi / NCR</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Locality / Area</label>
+              <input type="text" id="appArea" class="form-input" placeholder="e.g. Whitefield" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Full Turf Address</label>
+            <textarea id="appAddress" class="form-textarea" placeholder="Complete address with landmark" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sports Facilities Available</label>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; font-size:0.9rem;">
+              <label><input type="checkbox" name="appSports" value="Football" checked> ⚽ Football</label>
+              <label><input type="checkbox" name="appSports" value="Box Cricket" checked> ⚡ Box Cricket</label>
+              <label><input type="checkbox" name="appSports" value="Cricket"> 🏏 Full Cricket</label>
+              <label><input type="checkbox" name="appSports" value="Badminton"> 🏸 Badminton</label>
+              <label><input type="checkbox" name="appSports" value="Pickleball"> 🏓 Pickleball</label>
+              <label><input type="checkbox" name="appSports" value="Basketball"> 🏀 Basketball</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-full" id="appSubmitBtn" style="margin-top:16px;">
+            Submit Partner Application 🚀
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Public Footer -->
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { initNavbar, initFooter, showToast } from '../js/common.js';
+    import { Storage } from '../js/services/storage.js';
+
+    await initNavbar();
+    initFooter();
+
+    document.getElementById('ownerApplicationForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('appSubmitBtn');
+      btn.disabled = true;
+      btn.innerHTML = 'Submitting Application...';
+
+      const owners = Storage.get('OWNERS') || [];
+      const newOwner = {
+        id: `own-${Date.now()}`,
+        name: document.getElementById('appOwnerName').value,
+        businessName: document.getElementById('appBusinessName').value,
+        email: document.getElementById('appEmail').value,
+        phone: document.getElementById('appPhone').value,
+        status: 'Pending',
+        venuesCount: 1,
+        joined: new Date().toISOString().split('T')[0],
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        bankAccount: 'HDFC •••• 9911',
+        payoutFrequency: 'Weekly'
+      };
+
+      owners.push(newOwner);
+      Storage.set('OWNERS', owners);
+
+      showToast('Application Submitted! Our admin team will review within 24 hours.', 'success');
+      setTimeout(() => window.location.href = 'login.html', 800);
+    });
+  </script>
+</body>
+</html>

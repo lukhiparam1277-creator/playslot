@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Categories Manager - PlaySlot Admin</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Admin Sidebar -->
+    <div id="admin-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2>Sports Categories (8 Standard)</h2>
+        </div>
+
+        <div class="dash-header-actions">
+          <button id="openAddSportModalBtn" class="btn btn-accent btn-sm">+ Add Sport Category</button>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        
+        <div class="card" style="margin-bottom:24px; padding:18px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-size:1.5rem; margin-bottom:2px;">Standard Sports Catalog</h1>
+            <p style="font-size:0.88rem;">Cricket, Box Cricket, Football, Badminton, Basketball, Pickleball, Golf & 8 Ball Pool</p>
+          </div>
+          <button id="openAddSportModalBtn2" class="btn btn-accent">
+            + New Sport
+          </button>
+        </div>
+
+        <!-- Sports Grid -->
+        <div class="sports-admin-grid" id="adminSportsGrid">
+          <!-- Rendered by admin.js -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Sport Modal -->
+  <div class="modal-overlay" id="addSportModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Add Sport Category</h3>
+        <button class="toast-close" onclick="document.getElementById('addSportModal').classList.remove('open')">&times;</button>
+      </div>
+      <form id="addSportForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Sport Name</label>
+            <input type="text" id="newSportNameInput" class="form-input" placeholder="e.g. Table Tennis" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Icon Emoji</label>
+              <input type="text" id="newSportIconInput" class="form-input" placeholder="🏓" value="🏓" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select id="newSportCategorySelect" class="form-select">
+                <option value="Indoor">Indoor</option>
+                <option value="Outdoor">Outdoor</option>
+                <option value="Outdoor/Indoor">Outdoor/Indoor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Player Count Format</label>
+            <input type="text" id="newSportPlayersInput" class="form-input" placeholder="Singles / Doubles" value="2 to 4 players" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Short Description</label>
+            <textarea id="newSportDescInput" class="form-textarea" placeholder="Brief rules and court characteristics..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('addSportModal').classList.remove('open')">Cancel</button>
+          <button type="submit" class="btn btn-accent">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { AdminController } from '../js/admin.js';
+    AdminController.initSports();
+
+    document.getElementById('openAddSportModalBtn2')?.addEventListener('click', () => {
+      document.getElementById('addSportModal').classList.add('open');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Profile - Owner Portal - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/owner.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    <!-- Dynamic Owner Sidebar -->
+    <div id="owner-sidebar-container"></div>
+
+    <main class="dash-main">
+      <header class="dash-header">
+        <div class="dash-header-title">
+          <h2>Partner Business Profile</h2>
+        </div>
+      </header>
+
+      <div class="dash-body" style="max-width:860px;">
+        
+        <!-- Profile Banner -->
+        <div class="card" style="margin-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+            <img id="ownerAvatar" src="" alt="Avatar" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
+            <div>
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+                <h2 id="ownerNameDisplay" style="font-size:1.4rem;">Robert Downey</h2>
+                <span class="badge badge-success" id="ownerStatusBadge">Approved Partner</span>
+              </div>
+              <div id="ownerBusinessDisplay" style="color:var(--text-muted); font-size:0.95rem; font-weight:600;">SportsHub Arena Group</div>
+              <div id="ownerJoinedDisplay" style="font-size:0.8rem; color:var(--text-light); margin-top:4px;">Partner since Nov 2025</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Form -->
+        <div class="card">
+          <h3 style="margin-bottom:20px;">Business & Settlement Information</h3>
+          <form id="ownerProfileForm">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Full Name of Contact Person</label>
+                <input type="text" id="ownerNameInput" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Business / Entity Name</label>
+                <input type="text" id="ownerBizInput" class="form-input" required>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Contact Email</label>
+                <input type="email" id="ownerEmailInput" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Official Phone</label>
+                <input type="tel" id="ownerPhoneInput" class="form-input" required>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Linked Bank Account</label>
+                <input type="text" id="ownerBankInput" class="form-input" value="HDFC Bank (•••• 8842)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Settlement Frequency</label>
+                <select class="form-select">
+                  <option value="Weekly" selected>Weekly (Every Friday)</option>
+                  <option value="Daily">Daily Automated</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:10px;">
+              Save Profile Changes
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initOwnerSidebar, showToast } from '../js/common.js';
+    import { AuthService } from '../js/services/authService.js';
+    import { Storage } from '../js/services/storage.js';
+
+    await initOwnerSidebar('profile');
+    const auth = await AuthService.getCurrentAuth();
+    const owner = auth?.owner || Storage.get('OWNERS')[0];
+
+    if (owner) {
+      document.getElementById('ownerAvatar').src = owner.avatar;
+      document.getElementById('ownerNameDisplay').textContent = owner.name;
+      document.getElementById('ownerBusinessDisplay').textContent = owner.businessName;
+      document.getElementById('ownerJoinedDisplay').textContent = `Partner since ${owner.joined}`;
+      document.getElementById('ownerStatusBadge').textContent = `${owner.status} Partner`;
+      document.getElementById('ownerNameInput').value = owner.name;
+      document.getElementById('ownerBizInput').value = owner.businessName;
+      document.getElementById('ownerEmailInput').value = owner.email;
+      document.getElementById('ownerPhoneInput').value = owner.phone;
+      if (owner.bankAccount) document.getElementById('ownerBankInput').value = owner.bankAccount;
+    }
+
+    document.getElementById('ownerProfileForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showToast('Owner business profile updated!', 'success');
+    });
+  </script>
+</body>
+</html>

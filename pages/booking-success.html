@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/user.css">
+</head>
+<body>
+
+  <!-- Dynamic Navigation Bar -->
+  <div id="navbar-container"></div>
+
+  <main class="main-content">
+    <div class="container" style="padding:40px 20px;">
+      
+      <!-- Digital Ticket Card -->
+      <div class="ticket-card">
+        <div class="ticket-header">
+          <div style="font-size:2.5rem; margin-bottom:10px;">🎉</div>
+          <h2 style="color:#ffffff; font-size:1.8rem; margin-bottom:4px;">Booking Confirmed!</h2>
+          <p style="color:rgba(255,255,255,0.9); font-size:0.95rem;">Your turf slot has been secured. Show this digital pass at the arena reception.</p>
+        </div>
+
+        <div class="ticket-perforation">
+          <div class="perforation-circle" style="margin-left:-12px;"></div>
+          <div class="perforation-line"></div>
+          <div class="perforation-circle" style="margin-right:-12px;"></div>
+        </div>
+
+        <div class="ticket-body">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">MATCH PASS ID</span>
+              <div id="passBookingId" style="font-size:1.4rem; font-weight:900; color:var(--text-main); font-family:var(--font-heading);">BK-78901</div>
+            </div>
+            <span class="badge badge-success" style="font-size:0.85rem; padding:6px 12px;">CONFIRMED ✓</span>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">🏟️ Sports Arena:</span>
+            <strong id="passVenueName">Skyline Turf Arena</strong>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">🏆 Sport:</span>
+            <strong id="passSport">Football</strong>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">📅 Date:</span>
+            <strong id="passDate">5 Sep, 2026</strong>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">⏱️ Time Slot:</span>
+            <strong id="passTime" style="color:var(--primary);">07:00 PM – 08:00 PM</strong>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">👤 Player:</span>
+            <span id="passUserName">Alex Morgan</span>
+          </div>
+
+          <div class="ticket-row">
+            <span style="color:var(--text-muted);">💳 Payment Status:</span>
+            <strong id="passPaymentStatus" style="color:var(--success);">Paid (<span id="passPaymentMethod">UPI</span>)</strong>
+          </div>
+
+          <div class="ticket-row" style="border-bottom:none; padding-top:16px;">
+            <span style="font-size:1.1rem; font-weight:700;">Total Amount Paid:</span>
+            <strong id="passAmount" style="font-size:1.4rem; color:var(--primary); font-weight:900;">₹1,500</strong>
+          </div>
+
+          <!-- Simulated QR Code Box -->
+          <div style="margin:24px 0; padding:20px; background:var(--bg-main); border-radius:var(--radius-md); text-align:center; border:2px dashed var(--border-color);">
+            <div style="font-size:3rem; line-height:1; margin-bottom:8px;">📱</div>
+            <div style="font-size:0.82rem; font-weight:700; color:var(--text-muted);">SCAN AT TURF ENTRY GATE</div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button id="printPassBtn" class="btn btn-outline" style="flex:1;">
+              Print / Save Ticket 🖨️
+            </button>
+            <a href="my-bookings.html" class="btn btn-primary" style="flex:1;">
+              View My Bookings ➔
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Dynamic Footer -->
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { UserController } from '../js/user.js';
+    UserController.initBookingSuccess();
+  </script>
+</body>
+</html>

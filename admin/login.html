@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login - PlaySlot</title>
+  <!-- Google Fonts Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background:#070a12;">
+
+  <div class="card" style="max-width:440px; width:100%; margin:20px; background:#131b2e; border:1px solid #27354f; color:#ffffff;">
+    <div style="text-align:center; margin-bottom:24px;">
+      <div class="logo-icon" style="width:48px; height:48px; margin:0 auto 12px auto; font-size:1.4rem; background:linear-gradient(135deg, #6366f1 0%, #4338ca 100%);">⚡</div>
+      <span class="admin-badge-role" style="font-size:0.75rem; padding:4px 10px; margin-bottom:8px; display:inline-block;">MASTER CONTROL</span>
+      <h2 style="font-size:1.8rem; color:#ffffff; margin-bottom:6px;">Admin Authentication</h2>
+      <p style="font-size:0.88rem; color:#94a3b8;">Enter master administrative credentials to continue.</p>
+    </div>
+
+    <!-- Quick Fill Helper -->
+    <div style="background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3); padding:12px; border-radius:var(--radius-md); margin-bottom:20px; font-size:0.82rem; color:#c7d2fe;">
+      <strong>🔑 Default Admin Credentials:</strong><br>
+      Email: <code>admin@playslot.app</code><br>
+      Password: <code>admin123</code>
+    </div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label class="form-label" style="color:#ffffff;">Admin Email</label>
+        <input type="email" id="adminEmailInput" class="form-input" value="admin@playslot.app" required style="background:#0f172a; border-color:#334155; color:#ffffff;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" style="color:#ffffff;">Master Password</label>
+        <input type="password" id="adminPasswordInput" class="form-input" value="admin123" required style="background:#0f172a; border-color:#334155; color:#ffffff;">
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-lg w-full" id="adminLoginBtn" style="margin-top:10px;">
+        Authenticate Admin ➔
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:20px; font-size:0.82rem;">
+      <a href="../index.html" style="color:#94a3b8;">← Return to Public Website</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { AuthService } from '../js/services/authService.js';
+    import { showToast } from '../js/common.js';
+
+    document.getElementById('adminLoginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value;
+      const pass = document.getElementById('adminPasswordInput').value;
+      const btn = document.getElementById('adminLoginBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = 'Authenticating...';
+
+      try {
+        await AuthService.loginAdmin(email, pass);
+        showToast('Admin access granted', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 400);
+      } catch (err) {
+        showToast(err.message, 'danger');
+        btn.disabled = false;
+        btn.innerHTML = 'Authenticate Admin ➔';
+      }
+    });
+  </script>
+</body>
+</html>
