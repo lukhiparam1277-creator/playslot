@@ -2,23 +2,7 @@
  * PlaySlot Global Application Engine & UI Components (v2)
  */
 
-// Migrate / Clear legacy v1 localStorage keys to prevent conflicts with the new auth system
-(function clearLegacyStorage() {
-  const legacyKeys = [
-    'playslot_current_user',
-    'playslot_sports',
-    'playslot_turfs',
-    'playslot_bookings',
-    'playslot_users',
-    'playslot_owners',
-    'playslot_slots'
-  ];
-  legacyKeys.forEach(key => {
-    if (localStorage.getItem(key)) {
-      localStorage.removeItem(key);
-    }
-  });
-})();
+
 
 const PlaySlotApp = {
   // Toast Notification System

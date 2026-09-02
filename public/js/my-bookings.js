@@ -1,5 +1,6 @@
 /**
  * PlaySlot My Bookings Engine
+ * Filtered dynamically by authenticated user
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     const user = window.PlaySlotData.getCurrentUser();
-    const allBookings = window.PlaySlotData.getBookings();
+    const userId = user ? user.id : 'user-1';
+    const allBookings = window.PlaySlotData.getBookings({ userId });
 
     const upcoming = allBookings.filter(b => b.status === 'Confirmed');
     const completed = allBookings.filter(b => b.status === 'Completed');
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.innerHTML = currentList.map(b => `
       <div class="venue-card" style="flex-direction:row; padding:22px; align-items:center; gap:24px; margin-bottom:20px; flex-wrap:wrap;">
-        <img src="${b.turfImage}" alt="${b.turfName}" style="width:140px; height:105px; object-fit:cover; border-radius:12px;">
+        <img src="${b.turfImage || 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=800&q=80'}" alt="${b.turfName}" style="width:140px; height:105px; object-fit:cover; border-radius:12px;">
         <div style="flex:1; min-width:260px;">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
             <div>
@@ -98,44 +100,40 @@ document.addEventListener('DOMContentLoaded', () => {
           <strong>${booking.bookingId}</strong>
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="color:var(--text-muted);">Sport:</span>
+          <span style="color:var(--text-muted);">Player Name:</span>
+          <strong>${booking.userName}</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="color:var(--text-muted);">Sport Category:</span>
           <strong>${booking.sport}</strong>
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="color:var(--text-muted);">Match Date:</span>
-          <strong>${booking.date}</strong>
+          <span style="color:var(--text-muted);">Date & Timing:</span>
+          <strong>${booking.date} (${booking.timeSlot})</strong>
         </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="color:var(--text-muted);">Timing:</span>
-          <strong style="color:var(--primary-color);">${booking.timeSlot}</strong>
-        </div>
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="color:var(--text-muted);">Player Count:</span>
-          <strong>${booking.playersCount || 6} Players</strong>
-        </div>
-        <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border-color); padding-top:10px; margin-top:10px;">
-          <span><strong>Total Amount Paid:</strong></span>
-          <strong style="color:#059669; font-size:1.1rem;">₹${booking.totalAmount}</strong>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-muted);">Total Paid:</span>
+          <strong style="color:#059669; font-size:1.05rem;">₹${booking.totalAmount}</strong>
         </div>
       </div>
     `;
 
     const modalFooter = `
-      <button class="btn btn-outline-dark" onclick="window.print()">Print Ticket 🖨️</button>
-      <button class="btn btn-primary" onclick="PlaySlotApp.closeModal()">Done</button>
+      <button class="btn btn-primary" onclick="PlaySlotApp.closeModal()">Close</button>
+      <button onclick="window.print()" class="btn btn-outline-dark">Print Pass 🖨️</button>
     `;
 
-    PlaySlotApp.showModal(`Digital Ticket - ${booking.bookingId}`, modalContent, modalFooter);
+    PlaySlotApp.showModal('Slot Reservation Pass', modalContent, modalFooter);
   };
 
-  // Action: Cancel Slot with confirmation modal
+  // Action: Cancel Booking Flow
   window.promptCancelBooking = (bookingId) => {
     const booking = window.PlaySlotData.getBookingById(bookingId);
     if (!booking) return;
 
     const modalContent = `
-      <p style="color:var(--text-body); font-size:0.95rem; line-height:1.6; margin-bottom:16px;">
-        Are you sure you want to cancel your slot reservation at <strong>${booking.turfName}</strong> for <strong>${booking.date} (${booking.timeSlot})</strong>?
+      <p style="color:var(--text-body); font-size:0.95rem; margin-bottom:14px;">
+        Are you sure you want to cancel your slot reservation at <strong>${booking.turfName}</strong> on <strong>${booking.date} (${booking.timeSlot})</strong>?
       </p>
       <div style="background:var(--danger-light); padding:12px 16px; border-radius:8px; font-size:0.85rem; color:var(--danger-color);">
         ⚠️ A 100% refund of <strong>₹${booking.totalAmount}</strong> will be processed to your original payment method.

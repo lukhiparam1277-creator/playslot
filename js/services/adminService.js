@@ -10,18 +10,28 @@ export const AdminService = {
     const owners = Storage.get('OWNERS') || [];
     const venues = Storage.get('VENUES') || [];
     const bookings = Storage.get('BOOKINGS') || [];
-    const payments = Storage.get('PAYMENTS') || [];
 
+    const totalUsers = users.filter(u => !u.role || u.role === 'user').length;
+    const totalOwners = owners.filter(o => o.status === 'Approved' || o.status === 'Active').length;
     const pendingOwners = owners.filter(o => o.status === 'Pending').length;
-    const grossRevenue = payments.filter(p => p.status === 'Success').reduce((s, p) => s + (p.amount || 0), 0);
+    const totalVenues = venues.filter(v => v.status === 'Approved' || v.status === 'Active').length;
+    const totalBookings = bookings.length;
+
+    const grossRevenue = bookings
+      .filter(b => b.status === 'Confirmed' || b.status === 'Completed' || b.paymentStatus === 'Paid' || b.paymentStatus === 'Success')
+      .reduce((s, b) => s + (Number(b.amount) || Number(b.totalAmount) || 0), 0);
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayBookingsCount = bookings.filter(b => b.date === todayStr && b.status !== 'Cancelled').length;
 
     return {
-      totalUsers: users.length,
-      totalOwners: owners.length,
-      totalVenues: venues.length,
-      totalBookings: bookings.length,
+      totalUsers,
+      totalOwners,
       pendingOwners,
-      grossRevenue
+      totalVenues,
+      totalBookings,
+      grossRevenue,
+      todayBookingsCount
     };
   },
 

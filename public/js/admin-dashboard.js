@@ -1,5 +1,6 @@
 /**
  * PlaySlot Super Admin Console Interactive Engine
+ * 100% Dynamic - Zero Static / Fake Numbers
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -54,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderDashboard(container) {
     const stats = window.PlaySlotData.getAdminStats();
     const recentBookings = window.PlaySlotData.getBookings().slice(0, 5);
-    const pendingTurfs = window.PlaySlotData.getTurfs().filter(t => t.status === 'Pending');
 
     container.innerHTML = `
       <div class="admin-header">
@@ -62,13 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <h1 class="admin-title" style="font-size:1.8rem; font-weight:900;">🛡️ Super Administrator Console</h1>
           <p style="color:var(--text-muted); font-size:0.95rem;">System-wide governance, turf approvals, athlete users, and platform financials</p>
         </div>
-        <div style="display:flex; gap:10px;">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button onclick="window.promptResetDemoData()" class="btn btn-outline-dark btn-sm" style="border-color:#DC2626; color:#DC2626; font-weight:700;" title="Development reset tool">
+            🔄 Reset Demo Data
+          </button>
           <span class="badge badge-purple" style="padding:6px 14px; font-size:0.85rem;">⚡ Platform Operational</span>
           <a href="/index.html" target="_blank" class="btn btn-outline-dark btn-sm">View Live Site ↗</a>
         </div>
       </div>
 
-      <!-- Stats Grid (7 Metrics) -->
+      <!-- Stats Grid (7 Real Dynamic Metrics) -->
       <div class="stats-grid" style="grid-template-columns:repeat(4, 1fr); margin-bottom:24px;">
         <div class="stat-card">
           <div class="stat-icon" style="background:#E0F2FE; color:#0284C7;">👥</div>
@@ -164,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
             </thead>
             <tbody>
-              ${recentBookings.map(b => `
+              ${recentBookings.length > 0 ? recentBookings.map(b => `
                 <tr>
                   <td><strong style="color:var(--primary-color);">${b.bookingId}</strong></td>
                   <td>👤 ${b.userName}</td>
@@ -174,7 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td><strong style="color:#059669;">₹${b.totalAmount}</strong></td>
                   <td><span class="badge ${b.status === 'Confirmed' ? 'badge-success' : (b.status === 'Completed' ? 'badge-primary' : 'badge-danger')}">${b.status}</span></td>
                 </tr>
-              `).join('')}
+              `).join('') : `
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:36px 20px; color:var(--text-muted); font-size:0.95rem;">
+                    No bookings yet
+                  </td>
+                </tr>
+              `}
             </tbody>
           </table>
         </div>
@@ -210,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
             </thead>
             <tbody>
-              ${users.map(u => `
+              ${users.length > 0 ? users.map(u => `
                 <tr>
                   <td>
                     <div style="display:flex; gap:12px; align-items:center;">
@@ -221,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td>${u.email}</td>
                   <td>${u.phone}</td>
                   <td>${u.city}</td>
-                  <td><strong>${u.totalBookings} Slots</strong></td>
+                  <td><strong>${u.totalBookings || 0} Slots</strong></td>
                   <td>${u.joinedDate}</td>
                   <td><span class="badge ${u.status === 'Active' ? 'badge-success' : 'badge-danger'}">${u.status}</span></td>
                   <td>
@@ -235,7 +244,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                   </td>
                 </tr>
-              `).join('')}
+              `).join('') : `
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:36px 20px; color:var(--text-muted);">
+                    No athletes found
+                  </td>
+                </tr>
+              `}
             </tbody>
           </table>
         </div>
@@ -271,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
           <span style="color:var(--text-muted);">Total Slot Bookings:</span>
-          <strong style="color:var(--primary-color);">${u.totalBookings} Slots</strong>
+          <strong style="color:var(--primary-color);">${u.totalBookings || 0} Slots</strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
           <span style="color:var(--text-muted);">Account State:</span>
@@ -306,41 +321,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 <th>City</th>
                 <th>Turfs Listed</th>
                 <th>Bookings Handled</th>
-                <th>Monthly Revenue</th>
+                <th>Total Revenue</th>
                 <th>Status</th>
                 <th>Partner Actions</th>
               </tr>
             </thead>
             <tbody>
-              ${owners.map(o => `
+              ${owners.length > 0 ? owners.map(o => {
+                const ownerTurfs = window.PlaySlotData.getTurfs({ ownerId: o.id }, true);
+                const ownerBookings = window.PlaySlotData.getBookings({ ownerId: o.id });
+                const ownerRev = ownerBookings
+                  .filter(b => b.status === 'Confirmed' || b.status === 'Completed')
+                  .reduce((s, b) => s + (Number(b.totalAmount) || 0), 0);
+
+                return `
+                  <tr>
+                    <td>
+                      <div style="display:flex; gap:12px; align-items:center;">
+                        <img src="${o.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'}" alt="${o.name}" style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
+                        <div>
+                          <strong>${o.ownerName || o.name}</strong><br>
+                          <span style="font-size:0.75rem; color:var(--text-muted);">${o.businessName || ''}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>${o.email}</td>
+                    <td>${o.phone}</td>
+                    <td>${o.city}</td>
+                    <td><strong>${ownerTurfs.length} Turfs</strong></td>
+                    <td>${ownerBookings.length}</td>
+                    <td><strong style="color:#059669;">₹${ownerRev.toLocaleString()}</strong></td>
+                    <td><span class="badge ${o.status === 'Approved' ? 'badge-success' : (o.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${o.status}</span></td>
+                    <td>
+                      <div style="display:flex; gap:6px;">
+                        ${o.status === 'Pending' ? `
+                          <button onclick="window.adminApproveOwner('${o.id}')" class="btn btn-emerald btn-sm">Approve ✓</button>
+                          <button onclick="window.adminRejectOwner('${o.id}')" class="btn btn-danger btn-sm">Reject</button>
+                        ` : ''}
+                        ${o.status === 'Approved' ? `
+                          <button onclick="window.adminToggleOwner('${o.id}', 'Suspended')" class="btn btn-danger btn-sm">Suspend</button>
+                        ` : (o.status === 'Suspended' || o.status === 'Blocked' ? `
+                          <button onclick="window.adminToggleOwner('${o.id}', 'Approved')" class="btn btn-emerald btn-sm">Reactivate</button>
+                        ` : '')}
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
                 <tr>
-                  <td>
-                    <div style="display:flex; gap:12px; align-items:center;">
-                      <img src="${o.avatar}" alt="${o.name}" style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
-                      <strong>${o.name}</strong>
-                    </div>
-                  </td>
-                  <td>${o.email}</td>
-                  <td>${o.phone}</td>
-                  <td>${o.city}</td>
-                  <td><strong>${o.turfsCount} Turfs</strong></td>
-                  <td>${o.totalBookings}</td>
-                  <td><strong style="color:#059669;">₹${o.monthlyEarnings.toLocaleString()}</strong></td>
-                  <td><span class="badge ${o.status === 'Active' ? 'badge-success' : (o.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${o.status}</span></td>
-                  <td>
-                    <div style="display:flex; gap:6px;">
-                      ${o.status === 'Pending' ? `
-                        <button onclick="window.toggleOwnerStatus('${o.id}', 'Active')" class="btn btn-emerald btn-sm">Approve ✓</button>
-                      ` : ''}
-                      ${o.status === 'Active' ? `
-                        <button onclick="window.toggleOwnerStatus('${o.id}', 'Blocked')" class="btn btn-danger btn-sm">Block</button>
-                      ` : (o.status === 'Blocked' ? `
-                        <button onclick="window.toggleOwnerStatus('${o.id}', 'Active')" class="btn btn-emerald btn-sm">Unblock</button>
-                      ` : '')}
-                    </div>
+                  <td colspan="9" style="text-align:center; padding:36px 20px; color:var(--text-muted);">
+                    No owners registered yet
                   </td>
                 </tr>
-              `).join('')}
+              `}
             </tbody>
           </table>
         </div>
@@ -348,7 +381,19 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  window.toggleOwnerStatus = (ownerId, newStatus) => {
+  window.adminApproveOwner = (ownerId) => {
+    window.PlaySlotData.approveOwnerApplication(ownerId);
+    PlaySlotApp.showToast('Owner approved successfully! Portal access enabled.', 'success');
+    renderOwnersManagement(document.getElementById('adminSectionContainer'));
+  };
+
+  window.adminRejectOwner = (ownerId) => {
+    window.PlaySlotData.rejectOwnerApplication(ownerId, 'Application did not meet platform criteria.');
+    PlaySlotApp.showToast('Owner request rejected.', 'success');
+    renderOwnersManagement(document.getElementById('adminSectionContainer'));
+  };
+
+  window.adminToggleOwner = (ownerId, newStatus) => {
     window.PlaySlotData.updateOwnerStatus(ownerId, newStatus);
     PlaySlotApp.showToast(`Owner status updated to ${newStatus}.`, 'success');
     renderOwnersManagement(document.getElementById('adminSectionContainer'));
@@ -356,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 4. Admin Turfs Moderation Section ---
   function renderTurfsModeration(container) {
-    const turfs = window.PlaySlotData.getTurfs();
+    const turfs = window.PlaySlotData.getTurfs({}, true);
 
     container.innerHTML = `
       <div class="admin-header">
@@ -382,22 +427,22 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
             </thead>
             <tbody>
-              ${turfs.map(t => `
+              ${turfs.length > 0 ? turfs.map(t => `
                 <tr>
                   <td>
                     <div style="display:flex; gap:12px; align-items:center;">
-                      <img src="${t.images[0]}" alt="${t.name}" style="width:60px; height:45px; border-radius:8px; object-fit:cover;">
+                      <img src="${(t.images && t.images[0]) || 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=800&q=80'}" alt="${t.name}" style="width:60px; height:45px; border-radius:8px; object-fit:cover;">
                       <div>
                         <strong>${t.name}</strong><br>
                         <span style="font-size:0.78rem; color:var(--text-muted);">${t.turfType} Turf</span>
                       </div>
                     </div>
                   </td>
-                  <td>👤 ${t.ownerName || 'Vikram Malhotra'}</td>
+                  <td>👤 ${t.ownerName || 'Turf Partner'}</td>
                   <td><span class="badge badge-primary">🏆 ${t.sport}</span></td>
                   <td>${t.location}, ${t.city}</td>
                   <td><strong>₹${t.pricePerHour}</strong></td>
-                  <td><span class="badge badge-warning">★ ${t.rating}</span></td>
+                  <td><span class="badge badge-warning">★ ${t.rating || 5.0}</span></td>
                   <td><span class="badge ${t.status === 'Approved' ? 'badge-success' : (t.status === 'Pending' ? 'badge-warning' : 'badge-danger')}">${t.status}</span></td>
                   <td>
                     <div style="display:flex; gap:6px;">
@@ -413,7 +458,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                   </td>
                 </tr>
-              `).join('')}
+              `).join('') : `
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:36px 20px; color:var(--text-muted);">
+                    No turfs available
+                  </td>
+                </tr>
+              `}
             </tbody>
           </table>
         </div>
@@ -458,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </tr>
             </thead>
             <tbody>
-              ${bookings.map(b => `
+              ${bookings.length > 0 ? bookings.map(b => `
                 <tr>
                   <td><strong style="color:var(--primary-color);">${b.bookingId}</strong></td>
                   <td>👤 <strong>${b.userName}</strong><br><span style="font-size:0.78rem; color:var(--text-muted);">${b.userEmail}</span></td>
@@ -469,7 +520,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   <td><span style="font-size:0.8rem; color:var(--text-muted);">${b.paymentMethod || 'UPI Paid'}</span></td>
                   <td><span class="badge ${b.status === 'Confirmed' ? 'badge-success' : (b.status === 'Completed' ? 'badge-primary' : 'badge-danger')}">${b.status}</span></td>
                 </tr>
-              `).join('')}
+              `).join('') : `
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:36px 20px; color:var(--text-muted);">
+                    No bookings yet
+                  </td>
+                </tr>
+              `}
             </tbody>
           </table>
         </div>
@@ -592,8 +649,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- 7. Admin Reports Section ---
+  // --- 7. Admin Reports Section (Strictly Dynamic) ---
   function renderReports(container) {
+    const stats = window.PlaySlotData.getAdminStats();
+    const turfs = window.PlaySlotData.getTurfs({}, true);
+    const bookings = window.PlaySlotData.getBookings();
+
+    const commissionRevenue = Math.round(stats.totalRevenue * 0.08);
+
+    // City matrix dynamic calculation
+    const cities = ['Mumbai', 'Bengaluru', 'Delhi'];
+    const cityMatrix = cities.map(city => {
+      const cityTurfs = turfs.filter(t => t.city && t.city.toLowerCase().includes(city.toLowerCase()));
+      const cityBookings = bookings.filter(b => {
+        const turf = turfs.find(t => t.id === b.turfId);
+        return turf && turf.city && turf.city.toLowerCase().includes(city.toLowerCase());
+      });
+      const grossVolume = cityBookings
+        .filter(b => b.status === 'Confirmed' || b.status === 'Completed')
+        .reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+      return {
+        city,
+        turfsCount: cityTurfs.length,
+        bookingsCount: cityBookings.length,
+        grossVolume
+      };
+    });
+
     container.innerHTML = `
       <div class="admin-header">
         <div>
@@ -607,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="stat-icon" style="background:#ECFDF5; color:#10B981;">💰</div>
           <div class="stat-info">
             <h4>Total Platform GMV</h4>
-            <div class="value">₹45,82,000</div>
+            <div class="value">₹${stats.totalRevenue.toLocaleString()}</div>
           </div>
         </div>
 
@@ -615,15 +697,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="stat-icon" style="background:#E0F2FE; color:#0284C7;">📈</div>
           <div class="stat-info">
             <h4>Commission Revenue (8%)</h4>
-            <div class="value">₹3,66,560</div>
+            <div class="value">₹${commissionRevenue.toLocaleString()}</div>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-icon" style="background:#FEF3C7; color:#D97706;">🏟️</div>
           <div class="stat-info">
-            <h4>Top City</h4>
-            <div class="value">Mumbai (48%)</div>
+            <h4>Total Active Arenas</h4>
+            <div class="value">${stats.totalTurfs} Turfs</div>
           </div>
         </div>
       </div>
@@ -636,37 +718,21 @@ document.addEventListener('DOMContentLoaded', () => {
               <tr>
                 <th>City / Region</th>
                 <th>Total Turfs</th>
-                <th>Monthly Bookings</th>
+                <th>Processed Bookings</th>
                 <th>Gross Volume</th>
-                <th>Average Slot Price</th>
-                <th>Growth Rate</th>
+                <th>Platform Commission (8%)</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>Mumbai</strong></td>
-                <td>38 Turfs</td>
-                <td>1,840 Slots</td>
-                <td><strong style="color:#059669;">₹24,50,000</strong></td>
-                <td>₹1,350 / hr</td>
-                <td><span class="badge badge-success">+24% YoY</span></td>
-              </tr>
-              <tr>
-                <td><strong>Bengaluru</strong></td>
-                <td>32 Turfs</td>
-                <td>1,420 Slots</td>
-                <td><strong style="color:#059669;">₹18,20,000</strong></td>
-                <td>₹1,280 / hr</td>
-                <td><span class="badge badge-success">+31% YoY</span></td>
-              </tr>
-              <tr>
-                <td><strong>Delhi / NCR</strong></td>
-                <td>24 Turfs</td>
-                <td>980 Slots</td>
-                <td><strong style="color:#059669;">₹13,12,000</strong></td>
-                <td>₹1,400 / hr</td>
-                <td><span class="badge badge-success">+18% YoY</span></td>
-              </tr>
+              ${cityMatrix.map(c => `
+                <tr>
+                  <td><strong>${c.city}</strong></td>
+                  <td>${c.turfsCount} Turfs</td>
+                  <td>${c.bookingsCount} Slots</td>
+                  <td><strong style="color:#059669;">₹${c.grossVolume.toLocaleString()}</strong></td>
+                  <td>₹${Math.round(c.grossVolume * 0.08).toLocaleString()}</td>
+                </tr>
+              `).join('')}
             </tbody>
           </table>
         </div>
@@ -680,11 +746,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="admin-header">
         <div>
           <h1 class="admin-title" style="font-size:1.8rem; font-weight:900;">⚙️ Platform Settings & Configuration</h1>
-          <p style="color:var(--text-muted); font-size:0.95rem;">Configure convenience fees, GST rates, and notification parameters</p>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Configure convenience fees, GST rates, and demo state parameters</p>
         </div>
       </div>
 
-      <div class="summary-card" style="max-width:800px;">
+      <div class="summary-card" style="max-width:800px; margin-bottom:28px;">
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:16px;">Fee & Operational Variables</h3>
         <form id="adminSettingsForm">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:18px;">
             <div class="form-group">
@@ -711,6 +778,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <button type="submit" class="btn btn-primary">Save Platform Settings</button>
         </form>
       </div>
+
+      <!-- Section 25: Reset Demo Data Option -->
+      <div class="summary-card" style="max-width:800px; border-left:4px solid #DC2626;">
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:8px; color:#DC2626;">Developer Environment - Reset Demo Data</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">
+          Restore the pristine initial state: 4 users, 4 approved owners, 4 turfs, and 1 demo booking.
+        </p>
+        <button onclick="window.promptResetDemoData()" class="btn btn-danger">
+          🔄 Reset All Platform Demo Data
+        </button>
+      </div>
     `;
 
     document.getElementById('adminSettingsForm').addEventListener('submit', (e) => {
@@ -718,6 +796,36 @@ document.addEventListener('DOMContentLoaded', () => {
       PlaySlotApp.showToast('Platform settings saved successfully!', 'success');
     });
   }
+
+  // Section 25: Reset Demo Data with Confirmation Modal
+  window.promptResetDemoData = () => {
+    const modalContent = `
+      <p style="color:var(--text-body); font-size:0.95rem; margin-bottom:16px;">
+        Are you sure you want to reset all platform data to the initial clean demo state?
+      </p>
+      <div style="background:var(--bg-color); padding:14px; border-radius:10px; font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
+        • 4 initial users<br>
+        • 4 approved turf owners<br>
+        • 4 approved turfs<br>
+        • 1 realistic demo booking<br>
+        • All custom pending requests and newly booked slots will be cleared.
+      </div>
+    `;
+
+    const modalFooter = `
+      <button class="btn btn-outline-dark" onclick="PlaySlotApp.closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="window.executeResetDemoData()">Confirm Reset</button>
+    `;
+
+    PlaySlotApp.showModal('Reset All Demo Data?', modalContent, modalFooter);
+  };
+
+  window.executeResetDemoData = () => {
+    window.PlaySlotData.resetDemoData();
+    PlaySlotApp.closeModal();
+    PlaySlotApp.showToast('Demo data restored to initial clean state!', 'success');
+    renderAdminSection();
+  };
 
   // Global helper to switch admin sections
   window.switchAdminNav = (secName) => {
