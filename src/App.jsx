@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Pages
 import { Home } from './pages/Home';
@@ -48,23 +49,76 @@ export default function App() {
           <Route path="/sports" element={<Sports />} />
           <Route path="/venues" element={<Venues />} />
           <Route path="/venues/:id" element={<VenueDetail />} />
-          <Route path="/booking/success" element={<BookingSuccess />} />
-          <Route path="/my-bookings" element={<MyBookings />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/contact" element={<Contact />} />
+
+          {/* User Protected Routes */}
+          <Route
+            path="/booking-success"
+            element={
+              <ProtectedRoute>
+                <BookingSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/booking/success"
+            element={
+              <ProtectedRoute>
+                <BookingSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-bookings"
+            element={
+              <ProtectedRoute>
+                <MyBookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Turf Owner Routes */}
           <Route path="/owner/apply" element={<OwnerApply />} />
           <Route path="/owner/status" element={<OwnerStatus />} />
           <Route path="/owner/login" element={<OwnerLogin />} />
-          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+          <Route
+            path="/owner/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['turf_owner', 'admin']}>
+                <OwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Super Admin Routes */}
+          <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/owner-requests" element={<AdminOwnerRequests />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/owner-requests"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminOwnerRequests />
+              </ProtectedRoute>
+            }
+          />
 
           {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
