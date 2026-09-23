@@ -1,14 +1,20 @@
 {
-  "name": "playslot",
-  "version": "1.0.0",
-  "description": "Modern, premium sports slot booking website in pure HTML, CSS, and JavaScript",
-  "main": "server.js",
+  "name": "playslot-react",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.6"
   }
 }
