@@ -4,6 +4,7 @@ import venueService from '../services/venueService';
 import bookingService from '../services/bookingService';
 import userService from '../services/userService';
 import ownerService from '../services/ownerService';
+import { isFirebaseConfigured } from '../firebase/config';
 
 const DataContext = createContext(null);
 
@@ -37,6 +38,33 @@ export const DataProvider = ({ children }) => {
   const [users, setUsers] = useState(() => getStorage(STORAGE_KEYS.USERS, defaultUsers));
   const [applications, setApplications] = useState(() => getStorage(STORAGE_KEYS.APPLICATIONS, defaultApplications));
   const [slotsMap, setSlotsMap] = useState(() => getStorage(STORAGE_KEYS.SLOTS, {}));
+
+  // Hydrate data from Firestore on mount if available
+  useEffect(() => {
+    let isMounted = true;
+    async function hydrateFromFirestore() {
+      if (!isFirebaseConfigured()) return;
+      try {
+        const [remoteSports, remoteTurfs, remoteBookings, remoteUsers, remoteApps] = await Promise.all([
+          venueService.getAllSports(),
+          venueService.getAllVenues(),
+          bookingService.getAllBookings(),
+          userService.getAllUsers(),
+          ownerService.getAllApplications()
+        ]);
+        if (!isMounted) return;
+        if (remoteSports && remoteSports.length > 0) setSports(remoteSports);
+        if (remoteTurfs && remoteTurfs.length > 0) setTurfs(remoteTurfs);
+        if (remoteBookings && remoteBookings.length > 0) setBookings(remoteBookings);
+        if (remoteUsers && remoteUsers.length > 0) setUsers(remoteUsers);
+        if (remoteApps && remoteApps.length > 0) setApplications(remoteApps);
+      } catch (err) {
+        console.warn('[DataContext] Failed to fetch data from Firestore:', err);
+      }
+    }
+    hydrateFromFirestore();
+    return () => { isMounted = false; };
+  }, []);
 
   // Sync state changes to localStorage
   useEffect(() => {
