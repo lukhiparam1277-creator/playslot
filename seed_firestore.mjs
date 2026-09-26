@@ -1,11 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import {
   defaultSports,
+  defaultOwners,
   defaultTurfs,
-  defaultBookings,
-  defaultApplications,
-  defaultUsers
+  defaultUsers,
+  defaultBookings
 } from './src/data/initialData.js';
 
 const firebaseConfig = {
@@ -20,110 +20,87 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Additional system users
-const seedUsers = [
-  ...defaultUsers,
-  {
-    id: 'admin-1',
-    name: 'Super Administrator',
-    email: 'admin@playslot.com',
-    role: 'admin',
-    status: 'Active',
-    joinedDate: '2025-01-01',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
-  },
-  {
-    id: 'owner-1',
-    name: 'Vikram Malhotra',
-    email: 'owner@playslot.com',
-    phone: '+91 98201 23456',
-    role: 'turf_owner',
-    status: 'Active',
-    joinedDate: '2025-01-10',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
-  },
-  {
-    id: 'owner-2',
-    name: 'Ananya Deshmukh',
-    email: 'ananya@playslot.com',
-    phone: '+91 97411 44556',
-    role: 'turf_owner',
-    status: 'Active',
-    joinedDate: '2025-02-05',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
-  }
-];
-
 async function seedDatabase() {
-  console.log('--- Starting Firestore Database Seeding for playslot-0 ---');
+  console.log('====================================================');
+  console.log('--- STARTING FIREBASE FIRESTORE DATABASE SEEDING ---');
+  console.log('Project: playslot-0');
+  console.log('====================================================\n');
 
-  // 1. Remove temporary health check
-  try {
-    await deleteDoc(doc(db, '_healthCheck', 'ping'));
-  } catch (e) {
-    // ignore
-  }
-
-  // 2. Seed Sports
-  console.log(`Seeding ${defaultSports.length} sports into 'sports' collection...`);
-  for (const sport of defaultSports) {
-    await setDoc(doc(db, 'sports', sport.id), {
-      ...sport,
+  // 1. Seed Users Collection
+  console.log(`1. Seeding ${defaultUsers.length} Athletes/Users into 'users'...`);
+  for (const user of defaultUsers) {
+    await setDoc(doc(db, 'users', user.id), {
+      ...user,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
-    console.log(`  + Sport: ${sport.name} (${sport.id})`);
+    console.log(`   + User: ${user.name} (${user.email}) -> [users/${user.id}]`);
   }
 
-  // 3. Seed Venues / Turfs
-  console.log(`\nSeeding ${defaultTurfs.length} venues into 'venues' collection...`);
+  // 2. Seed Owners Collection
+  console.log(`\n2. Seeding ${defaultOwners.length} Turf Owners into 'owners'...`);
+  for (const owner of defaultOwners) {
+    await setDoc(doc(db, 'owners', owner.id), {
+      ...owner,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
+    console.log(`   + Owner: ${owner.name} [${owner.businessName}] -> [owners/${owner.id}]`);
+  }
+
+  // 3. Seed Turfs Collection
+  console.log(`\n3. Seeding ${defaultTurfs.length} Sports Turfs into 'turfs'...`);
   for (const turf of defaultTurfs) {
-    await setDoc(doc(db, 'venues', turf.id), {
+    await setDoc(doc(db, 'turfs', turf.id), {
       ...turf,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
-    console.log(`  + Venue: ${turf.name} (${turf.id})`);
+    console.log(`   + Turf: ${turf.name} [${turf.sport}] -> [turfs/${turf.id}]`);
   }
 
-  // 4. Seed Bookings
-  console.log(`\nSeeding ${defaultBookings.length} bookings into 'bookings' collection...`);
+  // 4. Seed Bookings Collection
+  console.log(`\n4. Seeding ${defaultBookings.length} Bookings into 'bookings'...`);
   for (const booking of defaultBookings) {
     await setDoc(doc(db, 'bookings', booking.id), {
       ...booking,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
-    console.log(`  + Booking: ${booking.bookingId} (${booking.id})`);
+    console.log(`   + Booking: ${booking.bookingId} (${booking.userName} @ ${booking.turfName}) -> [bookings/${booking.id}]`);
   }
 
-  // 5. Seed Partner Applications
-  console.log(`\nSeeding ${defaultApplications.length} applications into 'partnerApplications' collection...`);
-  for (const appItem of defaultApplications) {
-    await setDoc(doc(db, 'partnerApplications', appItem.id), {
-      ...appItem,
+  // 5. Seed Sports Catalog
+  console.log(`\n5. Seeding ${defaultSports.length} Sports into 'sports'...`);
+  for (const sport of defaultSports) {
+    await setDoc(doc(db, 'sports', sport.id), {
+      ...sport,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
-    console.log(`  + Application: ${appItem.turfName} (${appItem.applicationId})`);
+    console.log(`   + Sport: ${sport.icon} ${sport.name} -> [sports/${sport.id}]`);
   }
 
-  // 6. Seed Users
-  console.log(`\nSeeding ${seedUsers.length} users into 'users' collection...`);
-  for (const user of seedUsers) {
-    await setDoc(doc(db, 'users', user.id), {
-      ...user,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    console.log(`  + User: ${user.name} [${user.role}] (${user.id})`);
-  }
+  // 6. Seed Platform Settings
+  console.log(`\n6. Seeding Platform Governance into 'settings/platform'...`);
+  await setDoc(doc(db, 'settings', 'platform'), {
+    platformCommissionRate: 15,
+    gstRate: 18,
+    convenienceFee: 49,
+    maintenanceMode: false,
+    autoApproveOwners: false,
+    autoApproveTurfs: false,
+    updatedAt: new Date().toISOString()
+  });
+  console.log('   + Platform Settings: 15% commission, 18% GST -> [settings/platform]');
 
-  console.log('\n--- Firestore Database Seeding Completed Successfully! ---');
+  console.log('\n====================================================');
+  console.log('✅ ALL COLLECTIONS SEEDED IN FIREBASE FIRESTORE!');
+  console.log('====================================================');
   process.exit(0);
 }
 
 seedDatabase().catch((err) => {
-  console.error('Fatal error during seeding:', err);
+  console.error('❌ Error during Firestore seeding:', err);
   process.exit(1);
 });
