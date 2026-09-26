@@ -15,7 +15,7 @@ export const Venues = () => {
   const [maxPrice, setMaxPrice] = useState(3000);
 
   const filteredTurfs = useMemo(() => {
-    let result = turfs.filter(t => t.status === 'Approved');
+    let result = turfs.filter(t => (t.status || '').toUpperCase() === 'APPROVED' || (t.status || '').toUpperCase() === 'ACTIVE');
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();

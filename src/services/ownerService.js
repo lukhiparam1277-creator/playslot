@@ -1,43 +1,77 @@
-import {
-  COLLECTIONS,
-  getCollectionDocs,
-  getDocById,
-  createFirestoreDoc,
-  updateFirestoreDoc,
-  deleteFirestoreDoc
-} from '../firebase/firestore';
-import { defaultApplications } from '../data/initialData';
+/**
+ * Owner Service for PlaySlot
+ * Standardized CRUD for Turf Owners. Easily replaceable with Express /api/owners endpoints.
+ */
+
+import storageService, { STORAGE_KEYS } from './storageService';
+import { defaultOwners } from '../data/initialData';
 
 export const ownerService = {
-  async getAllApplications() {
-    const docs = await getCollectionDocs(COLLECTIONS.APPLICATIONS);
-    return docs.length ? docs : defaultApplications;
+  async getOwners() {
+    return storageService.get(STORAGE_KEYS.OWNERS, defaultOwners);
   },
 
-  async getApplicationById(id) {
-    const app = await getDocById(COLLECTIONS.APPLICATIONS, id);
-    if (app) return app;
-    return defaultApplications.find(a => 
-      a.applicationId?.toLowerCase() === (id || '').toLowerCase() || 
-      a.id === id || 
-      a.email?.toLowerCase() === (id || '').toLowerCase()
-    ) || null;
+  async getOwnerById(id) {
+    const owners = await this.getOwners();
+    return owners.find(o => o.id === id || o.email?.toLowerCase() === id?.toLowerCase()) || null;
   },
 
-  async submitApplication(appData) {
-    const appId = 'PS-OWNER-' + Math.floor(10000 + Math.random() * 90000);
-    const payload = {
-      ...appData,
-      applicationId: appId,
-      id: 'app-' + Date.now(),
-      status: 'Pending',
-      submittedDate: new Date().toISOString().split('T')[0]
+  async registerOwner(ownerData) {
+    const owners = await this.getOwners();
+    const newOwnerId = 'owner-' + Date.now();
+    const newOwner = {
+      id: newOwnerId,
+      name: ownerData.name || ownerData.ownerName,
+      businessName: ownerData.businessName || `${ownerData.name}'s Sports Arena`,
+      email: ownerData.email,
+      phone: ownerData.phone,
+      password: ownerData.password || 'password123',
+      city: ownerData.city || 'Mumbai',
+      registeredDate: new Date().toISOString().split('T')[0],
+      turfsCount: 0,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      ...ownerData,
+      status: 'PENDING'
     };
-    return await createFirestoreDoc(COLLECTIONS.APPLICATIONS, payload, payload.id);
+
+    const updated = [newOwner, ...owners];
+    storageService.set(STORAGE_KEYS.OWNERS, updated);
+    return newOwner;
   },
 
-  async updateApplicationStatus(id, status, rejectionReason = '') {
-    return await updateFirestoreDoc(COLLECTIONS.APPLICATIONS, id, { status, rejectionReason });
+  async updateOwnerStatus(ownerId, status, notes = '') {
+    const owners = await this.getOwners();
+    let updatedOwner = null;
+    const updated = owners.map(o => {
+      if (o.id === ownerId || o.email?.toLowerCase() === ownerId?.toLowerCase()) {
+        updatedOwner = { ...o, status, notes, updatedAt: new Date().toISOString() };
+        return updatedOwner;
+      }
+      return o;
+    });
+    storageService.set(STORAGE_KEYS.OWNERS, updated);
+    return updatedOwner;
+  },
+
+  async updateOwner(ownerId, updates) {
+    const owners = await this.getOwners();
+    let updatedOwner = null;
+    const updated = owners.map(o => {
+      if (o.id === ownerId) {
+        updatedOwner = { ...o, ...updates };
+        return updatedOwner;
+      }
+      return o;
+    });
+    storageService.set(STORAGE_KEYS.OWNERS, updated);
+    return updatedOwner;
+  },
+
+  async deleteOwner(ownerId) {
+    const owners = await this.getOwners();
+    const filtered = owners.filter(o => o.id !== ownerId);
+    storageService.set(STORAGE_KEYS.OWNERS, filtered);
+    return true;
   }
 };
 

@@ -1,130 +1,121 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 
 export const OwnerStatus = () => {
   const [searchParams] = useSearchParams();
-  const { getApplicationById, getApplicationByEmail } = useData();
+  const initialEmail = searchParams.get('email') || '';
+  const initialId = searchParams.get('appId') || searchParams.get('id') || '';
 
-  const [query, setQuery] = useState(searchParams.get('appId') || '');
-  const [result, setResult] = useState(null);
-  const [searched, setSearched] = useState(false);
+  const { owners } = useData();
+  const [query, setQuery] = useState(initialEmail || initialId);
+  const [searched, setSearched] = useState(Boolean(initialEmail || initialId));
 
-  useEffect(() => {
-    const initialId = searchParams.get('appId');
-    if (initialId) {
-      const found = getApplicationById(initialId);
-      if (found) {
-        setResult(found);
-        setSearched(true);
-      }
-    }
-  }, [searchParams, getApplicationById]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
-    const found = getApplicationById(query.trim()) || getApplicationByEmail(query.trim());
-    setResult(found || null);
-    setSearched(true);
-  };
+  const matchedOwner = owners.find(o => 
+    (o.email && o.email.toLowerCase() === query.trim().toLowerCase()) ||
+    (o.id && o.id.toLowerCase() === query.trim().toLowerCase()) ||
+    (o.phone && o.phone.includes(query.trim()))
+  );
 
   return (
-    <div style={{ padding: '40px 0 80px 0' }}>
-      <div className="container" style={{ maxWidth: '720px' }}>
+    <div style={{ padding: '60px 0 100px 0', minHeight: '80vh', background: 'linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 100%)' }}>
+      <div className="container" style={{ maxWidth: '680px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div className="badge badge-primary" style={{ marginBottom: '8px' }}>APPLICATION TRACKER</div>
           <h1 style={{ fontSize: '2.2rem', fontWeight: '900' }}>Partner Application Status</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Enter your Application ID (e.g. PS-OWNER-10245) or registered email</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginTop: '6px' }}>
+            Check the verification and approval progress of your turf merchant account
+          </p>
         </div>
 
-        <div className="summary-card" style={{ marginBottom: '32px' }}>
-          <form onSubmit={handleSearch} style={{ display: 'flex', gap: '12px' }}>
+        <div className="summary-card" style={{ padding: '36px', borderRadius: '20px', border: '1px solid #E2E8F0', marginBottom: '24px' }}>
+          <form onSubmit={(e) => { e.preventDefault(); setSearched(true); }} style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
             <input
               type="text"
               className="form-input"
-              placeholder="Application ID or Email..."
+              placeholder="Enter your registered email or Owner ID..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              required
+              style={{ flex: 1, padding: '12px 16px', borderRadius: '10px' }}
             />
-            <button type="submit" className="btn btn-primary" style={{ flexShrink: 0 }}>
-              Track Status 🔍
+            <button type="submit" className="btn btn-primary" style={{ padding: '12px 24px', fontWeight: '700' }}>
+              Track 🔍
             </button>
           </form>
-        </div>
 
-        {searched && (
-          result ? (
-            <div className="summary-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '800' }}>{result.turfName}</h3>
-                <span className={`badge ${result.status === 'Approved' ? 'badge-success' : (result.status === 'Pending' ? 'badge-warning' : 'badge-danger')}`}>
-                  ● {result.status.toUpperCase()}
-                </span>
-              </div>
-
-              <div style={{ background: 'var(--bg-color)', padding: '18px', borderRadius: '12px', fontSize: '0.92rem', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Application Reference:</span>
-                  <strong>{result.applicationId}</strong>
+          {searched && matchedOwner ? (
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid #E2E8F0', paddingBottom: '16px' }}>
+                <div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '800', margin: 0 }}>{matchedOwner.businessName || matchedOwner.name}</h3>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>Owner: {matchedOwner.name} • {matchedOwner.city}</div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Applicant Name:</span>
-                  <strong>{result.ownerName}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Submitted Date:</span>
-                  <strong>{result.submittedDate}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>City & Area:</span>
-                  <strong>{result.area}, {result.city}</strong>
+                <div>
+                  {matchedOwner.status === 'APPROVED' && (
+                    <span className="badge badge-success" style={{ fontSize: '0.85rem', padding: '6px 14px' }}>
+                      ✓ APPROVED & ACTIVE
+                    </span>
+                  )}
+                  {matchedOwner.status === 'PENDING' && (
+                    <span className="badge badge-warning" style={{ fontSize: '0.85rem', padding: '6px 14px' }}>
+                      ⏳ UNDER ADMIN REVIEW
+                    </span>
+                  )}
+                  {(matchedOwner.status === 'REJECTED' || matchedOwner.status === 'SUSPENDED') && (
+                    <span className="badge badge-danger" style={{ fontSize: '0.85rem', padding: '6px 14px' }}>
+                      ✕ {matchedOwner.status}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {result.status === 'Approved' && (
-                <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '16px', borderRadius: '12px', marginBottom: '16px' }}>
-                  <div style={{ fontWeight: '800', color: '#065F46', marginBottom: '4px' }}>🎉 Congratulations! Your turf is approved and live.</div>
-                  <p style={{ color: '#047857', fontSize: '0.88rem' }}>
-                    You can now log in to the Turf Owner Console to manage slot timings and pricing.
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '0.9rem', marginBottom: '20px' }}>
+                <div>
+                  <span style={{ color: 'var(--text-muted)', display: 'block' }}>Registered Email:</span>
+                  <strong>{matchedOwner.email}</strong>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-muted)', display: 'block' }}>Submission Date:</span>
+                  <strong>{matchedOwner.registeredDate || 'Recent'}</strong>
+                </div>
+              </div>
+
+              {matchedOwner.status === 'APPROVED' ? (
+                <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', padding: '16px', borderRadius: '12px', textAlign: 'center' }}>
+                  <p style={{ color: '#065F46', fontWeight: '700', marginBottom: '12px' }}>
+                    🎉 Your partner account is approved! You can now access your Owner Console.
                   </p>
-                  <Link to="/owner/login" className="btn btn-emerald btn-sm" style={{ marginTop: '12px' }}>
-                    Go to Owner Sign In ➔
+                  <Link to="/owner/login" className="btn btn-emerald" style={{ padding: '10px 24px' }}>
+                    Log into Owner Console ➔
                   </Link>
                 </div>
-              )}
-
-              {result.status === 'Pending' && (
-                <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', padding: '16px', borderRadius: '12px' }}>
-                  <div style={{ fontWeight: '800', color: '#92400E', marginBottom: '4px' }}>⏳ Application Under Review</div>
-                  <p style={{ color: '#B45309', fontSize: '0.88rem' }}>
-                    Our team is verifying the ground details and quality standards. You will receive an update shortly.
+              ) : matchedOwner.status === 'PENDING' ? (
+                <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '16px', borderRadius: '12px' }}>
+                  <p style={{ color: '#92400E', fontSize: '0.92rem', margin: 0 }}>
+                    ℹ️ <strong>Status: Pending Admin Moderation.</strong> Our team is reviewing your registration details. As soon as the Super Administrator approves your account, you will be able to log in.
                   </p>
                 </div>
-              )}
-
-              {result.status === 'Rejected' && (
+              ) : (
                 <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', padding: '16px', borderRadius: '12px' }}>
-                  <div style={{ fontWeight: '800', color: '#991B1B', marginBottom: '4px' }}>✕ Application Not Approved</div>
-                  <p style={{ color: '#B91C1C', fontSize: '0.88rem' }}>
-                    Reason: {result.rejectionReason || 'Ground specifications did not meet platform safety requirements.'}
+                  <p style={{ color: '#991B1B', fontSize: '0.92rem', margin: 0 }}>
+                    Your application status is <strong>{matchedOwner.status}</strong>. Please reach out to <a href="mailto:support@playslot.com" style={{ textDecoration: 'underline' }}>support@playslot.com</a> for details.
                   </p>
                 </div>
               )}
             </div>
-          ) : (
-            <div className="empty-state">
-              <div className="empty-icon">🔍</div>
-              <h3>No Application Found</h3>
-              <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>
-                We couldn't find an application matching "{query}".
-              </p>
+          ) : searched ? (
+            <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🔍</div>
+              <h4>No matching owner application found</h4>
+              <p style={{ fontSize: '0.9rem' }}>Please verify the email address or register as a new partner.</p>
+              <Link to="/owner/register" className="btn btn-primary btn-sm" style={{ marginTop: '12px' }}>
+                Register as Owner
+              </Link>
             </div>
-          )
-        )}
+          ) : null}
+        </div>
       </div>
     </div>
   );
 };
+
+export default OwnerStatus;

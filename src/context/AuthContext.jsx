@@ -1,14 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-  loginWithFirebase,
-  registerWithFirebase,
-  logoutFromFirebase,
-  subscribeToAuthState
-} from '../firebase/auth';
-import { isFirebaseConfigured } from '../firebase/config';
+import storageService, { STORAGE_KEYS } from '../services/storageService';
+import { defaultOwners, defaultUsers } from '../data/initialData';
 
 const AuthContext = createContext(null);
-const STORAGE_KEY_AUTH = 'playslot_react_user';
+const STORAGE_KEY_AUTH = 'playslot_current_session';
 
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.warn('Auth initial parse error:', e);
     }
-    // Default active athlete profile for smooth demo interaction
+    // Default active user session for smooth customer testing
     return {
       id: 'user-1',
       uid: 'user-1',
@@ -29,8 +24,8 @@ export const AuthProvider = ({ children }) => {
       role: 'user', // 'user' | 'turf_owner' | 'admin'
       city: 'Mumbai',
       status: 'Active',
-      joinedDate: '2025-01-15',
-      totalBookings: 2,
+      joinedDate: '2026-01-12',
+      totalBookings: 1,
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
     };
   });
@@ -44,82 +39,84 @@ export const AuthProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Subscribe to Firebase Auth state if configured
-  useEffect(() => {
-    if (!isFirebaseConfigured()) return;
-
-    const unsubscribe = subscribeToAuthState((firebaseUser) => {
-      if (firebaseUser) {
-        // Resolve role based on email or custom claims
-        let role = 'user';
-        if (firebaseUser.email?.includes('admin')) role = 'admin';
-        else if (firebaseUser.email?.includes('owner')) role = 'turf_owner';
-
-        setCurrentUser(prev => ({
-          id: firebaseUser.uid,
-          uid: firebaseUser.uid,
-          name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'User'),
-          email: firebaseUser.email,
-          role,
-          avatar: firebaseUser.photoURL || prev?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-          city: prev?.city || 'Mumbai'
-        }));
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const login = async (email, role = 'user', name = '', password = 'password123') => {
+  const login = async (email, password = 'password', requestedRole = '') => {
     setLoading(true);
     try {
-      if (isFirebaseConfigured()) {
-        try {
-          await loginWithFirebase(email, password);
-        } catch (fbErr) {
-          console.warn('[Firebase Auth] Fallback to client session:', fbErr.message);
-        }
-      }
+      const cleanEmail = (email || '').trim().toLowerCase();
 
-      let userObj;
-      if (role === 'admin' || email.includes('admin')) {
-        userObj = {
+      // 1. Admin login
+      if (requestedRole === 'admin' || cleanEmail.includes('admin')) {
+        const adminUser = {
           id: 'admin-1',
           uid: 'admin-1',
           name: 'Super Administrator',
-          email: email || 'admin@playslot.com',
+          email: cleanEmail || 'admin@playslot.com',
           role: 'admin',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
         };
-      } else if (role === 'turf_owner' || email.includes('owner')) {
-        userObj = {
-          id: 'owner-1',
-          uid: 'owner-1',
-          name: name || 'Vikram Malhotra',
-          email: email || 'owner@playslot.com',
-          phone: '+91 98201 23456',
-          role: 'turf_owner',
-          city: 'Mumbai',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
-        };
-      } else {
-        userObj = {
-          id: 'user-' + Date.now(),
-          uid: 'user-' + Date.now(),
-          name: name || (email ? email.split('@')[0].toUpperCase() : 'Rahul Sharma'),
-          email: email || 'user@playslot.com',
-          phone: '+91 98765 43210',
-          role: 'user',
-          city: 'Mumbai',
-          status: 'Active',
-          joinedDate: new Date().toISOString().split('T')[0],
-          totalBookings: 2,
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
-        };
+        setCurrentUser(adminUser);
+        return { success: true, user: adminUser };
       }
 
+      // 2. Owner login
+      if (requestedRole === 'turf_owner' || requestedRole === 'owner' || cleanEmail.includes('owner')) {
+        const owners = storageService.get(STORAGE_KEYS.OWNERS, defaultOwners);
+        const owner = owners.find(o => o.email?.toLowerCase() === cleanEmail) || owners[0];
+
+        if (owner && (owner.status === 'PENDING' || owner.status === 'Pending')) {
+          return {
+            success: false,
+            pending: true,
+            status: 'PENDING',
+            message: 'Your owner account has been submitted and is currently pending Admin approval.'
+          };
+        }
+
+        if (owner && (owner.status === 'REJECTED' || owner.status === 'SUSPENDED')) {
+          return {
+            success: false,
+            status: owner.status,
+            message: `Your owner account has been ${owner.status.toLowerCase()}. Please contact platform support.`
+          };
+        }
+
+        const ownerUser = {
+          id: owner ? owner.id : 'owner-1',
+          uid: owner ? owner.id : 'owner-1',
+          name: owner ? owner.name : 'Vikram Malhotra',
+          businessName: owner ? owner.businessName : 'Thunderbolt Sports Infra LLP',
+          email: owner ? owner.email : cleanEmail,
+          phone: owner ? owner.phone : '+91 98201 23456',
+          city: owner ? owner.city : 'Mumbai',
+          role: 'turf_owner',
+          status: owner ? owner.status : 'APPROVED',
+          avatar: owner ? owner.avatar : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+        };
+
+        setCurrentUser(ownerUser);
+        return { success: true, user: ownerUser };
+      }
+
+      // 3. User login
+      const users = storageService.get(STORAGE_KEYS.USERS, defaultUsers);
+      const existingUser = users.find(u => u.email?.toLowerCase() === cleanEmail);
+
+      const userObj = {
+        id: existingUser ? existingUser.id : ('user-' + Date.now()),
+        uid: existingUser ? existingUser.id : ('user-' + Date.now()),
+        name: existingUser ? existingUser.name : (cleanEmail ? cleanEmail.split('@')[0].toUpperCase() : 'Rahul Sharma'),
+        email: cleanEmail || 'user@playslot.com',
+        phone: existingUser ? existingUser.phone : '+91 98765 43210',
+        role: 'user',
+        city: existingUser ? existingUser.city : 'Mumbai',
+        status: existingUser ? existingUser.status : 'Active',
+        joinedDate: existingUser ? existingUser.joinedDate : new Date().toISOString().split('T')[0],
+        totalBookings: existingUser ? existingUser.totalBookings : 0,
+        avatar: existingUser ? existingUser.avatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
+      };
+
       setCurrentUser(userObj);
-      return userObj;
+      return { success: true, user: userObj };
     } finally {
       setLoading(false);
     }
@@ -128,21 +125,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setLoading(true);
     try {
-      if (isFirebaseConfigured()) {
-        try {
-          await registerWithFirebase(userData.email, userData.password || 'password123', userData.name);
-        } catch (fbErr) {
-          console.warn('[Firebase Auth] Fallback to client registration:', fbErr.message);
-        }
-      }
-
       const newUser = {
         id: 'user-' + Date.now(),
         uid: 'user-' + Date.now(),
         name: userData.name,
         email: userData.email,
         phone: userData.phone || '+91 98765 43210',
-        role: userData.role || 'user',
+        role: 'user',
         city: userData.city || 'Mumbai',
         status: 'Active',
         joinedDate: new Date().toISOString().split('T')[0],
@@ -150,27 +139,20 @@ export const AuthProvider = ({ children }) => {
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
       };
 
+      // Add to users list
+      const users = storageService.get(STORAGE_KEYS.USERS, defaultUsers);
+      storageService.set(STORAGE_KEYS.USERS, [newUser, ...users]);
+
       setCurrentUser(newUser);
-      return newUser;
+      return { success: true, user: newUser };
     } finally {
       setLoading(false);
-    }
-  };
-
-  const switchRole = (newRole) => {
-    if (newRole === 'admin') {
-      login('admin@playslot.com', 'admin');
-    } else if (newRole === 'turf_owner') {
-      login('owner@playslot.com', 'turf_owner');
-    } else {
-      login('user@playslot.com', 'user', 'Rahul Sharma');
     }
   };
 
   const logout = async () => {
     setLoading(true);
     try {
-      await logoutFromFirebase();
       setCurrentUser(null);
     } finally {
       setLoading(false);
@@ -185,8 +167,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
-        logout,
-        switchRole
+        logout
       }}
     >
       {children}

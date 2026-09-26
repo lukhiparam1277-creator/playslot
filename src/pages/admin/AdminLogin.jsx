@@ -3,96 +3,92 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
-export default function AdminLogin() {
+export const AdminLogin = () => {
   const { login } = useAuth();
-  const { addToast } = useToast();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: 'admin@playslot.com',
-    password: 'password'
-  });
+  const [email, setEmail] = useState('admin@playslot.com');
+  const [password, setPassword] = useState('password123');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = login(formData.email, formData.password, 'admin');
+    const res = await login(email, password, 'admin');
     if (res.success) {
-      addToast('Super Admin access granted! Welcome back.', 'success');
+      showToast('Super Admin access granted! 🛡️', 'success');
       navigate('/admin/dashboard');
     } else {
-      addToast(res.message || 'Invalid administrator credentials.', 'error');
+      showToast(res.message || 'Invalid administrator credentials.', 'error');
     }
   };
 
   const handleQuickDemo = () => {
-    login('admin@playslot.com', 'password', 'admin');
-    addToast('Logged in as Super Admin (Demo Mode)', 'success');
-    navigate('/admin/dashboard');
+    login('admin@playslot.com', 'password', 'admin').then(() => {
+      showToast('Super Admin access granted! (Demo Mode) 🛡️', 'success');
+      navigate('/admin/dashboard');
+    });
   };
 
   return (
-    <div className="auth-page-wrapper">
-      <div className="container" style={{ maxWidth: '480px', padding: '60px 20px' }}>
-        <div className="card glass-card" style={{ padding: '36px', border: '1px solid rgba(239, 68, 68, 0.3)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #ef4444, #f59e0b)' }}></div>
-          
-          <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', margin: '0 auto 16px auto', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-              <i className="fas fa-shield-alt"></i>
-            </div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '6px' }}>Master Admin Portal</h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>PlaySlot Operations & Super Governance Console</p>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0F172A', padding: '40px 20px' }}>
+      <div style={{ maxWidth: '460px', width: '100%', background: '#1E293B', borderRadius: '24px', padding: '40px', border: '1px solid rgba(239, 68, 68, 0.3)', boxShadow: '0 24px 64px rgba(0, 0, 0, 0.5)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #EF4444, #F59E0B)' }}></div>
+
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '18px', background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 16px auto', border: '1px solid rgba(239, 68, 68, 0.3)', boxShadow: '0 8px 24px rgba(239, 68, 68, 0.25)' }}>
+            🛡️
+          </div>
+          <h1 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#FFFFFF', margin: '0 0 6px 0' }}>Super Admin Portal</h1>
+          <p style={{ color: '#94A3B8', fontSize: '0.88rem', margin: 0 }}>PlaySlot Master Governance & Operational Moderation</p>
+        </div>
+
+        {/* Demo Quick Access */}
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '12px', padding: '12px 16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: '#EF4444', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Demo Administrator</div>
+            <div style={{ fontSize: '0.85rem', color: '#F1F5F9', marginTop: '2px' }}>admin@playslot.com</div>
+          </div>
+          <button type="button" onClick={handleQuickDemo} className="btn btn-sm" style={{ background: '#EF4444', color: '#FFFFFF', fontSize: '0.78rem', padding: '6px 14px', borderRadius: '8px' }}>
+            Instant Access
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group" style={{ marginBottom: '18px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#E2E8F0', marginBottom: '6px', display: 'block' }}>Admin Email</label>
+            <input
+              type="email"
+              className="form-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', background: '#0F172A', color: '#FFFFFF', border: '1.5px solid #334155' }}
+            />
           </div>
 
-          <div style={{ background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '10px', padding: '12px 16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Demo Admin Credentials</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginTop: '2px' }}>admin@playslot.com / password</div>
-            </div>
-            <button type="button" onClick={handleQuickDemo} className="btn btn-sm" style={{ background: '#ef4444', color: '#fff', fontSize: '0.8rem', padding: '6px 12px' }}>
-              Auto Login
-            </button>
+          <div className="form-group" style={{ marginBottom: '24px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#E2E8F0', marginBottom: '6px', display: 'block' }}>Security Password</label>
+            <input
+              type="password"
+              className="form-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: '100%', padding: '12px 14px', borderRadius: '10px', background: '#0F172A', color: '#FFFFFF', border: '1.5px solid #334155' }}
+            />
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group" style={{ marginBottom: '18px' }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 600 }}>
-                <i className="fas fa-user-shield" style={{ color: '#ef4444' }}></i> Admin Email
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="admin@playslot.com"
-              />
-            </div>
+          <button type="submit" className="btn btn-block" style={{ width: '100%', background: 'linear-gradient(135deg, #EF4444, #DC2626)', color: '#FFFFFF', padding: '14px', fontSize: '1rem', fontWeight: '800', borderRadius: '12px', border: 'none', cursor: 'pointer', boxShadow: '0 8px 24px rgba(239, 68, 68, 0.4)' }}>
+            Unlock Super Admin Console 🛡️
+          </button>
+        </form>
 
-            <div className="form-group" style={{ marginBottom: '24px' }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 600 }}>
-                <i className="fas fa-key" style={{ color: '#ef4444' }}></i> Security Password
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                required
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button type="submit" className="btn btn-block" style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff', padding: '14px', fontSize: '1rem', fontWeight: 700, boxShadow: '0 4px 14px rgba(239, 68, 68, 0.4)' }}>
-              <i className="fas fa-lock-open" style={{ marginRight: '8px' }}></i> Unlock Super Admin Console
-            </button>
-          </form>
-
-          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Looking for standard user portal? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>User Login</Link> • <Link to="/owner/login" style={{ color: 'var(--accent)', fontWeight: 600 }}>Turf Owner</Link>
-          </div>
+        <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.85rem', color: '#94A3B8' }}>
+          <Link to="/" style={{ color: '#60A5FA', fontWeight: '700' }}>← Return to Public Website</Link>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default AdminLogin;

@@ -20,7 +20,7 @@ export const Home = () => {
     navigate(`/venues?${params.toString()}`);
   };
 
-  const featuredTurfs = turfs.filter(t => t.featured || t.status === 'Approved').slice(0, 3);
+  const featuredTurfs = turfs.filter(t => (t.status || '').toUpperCase() === 'APPROVED' || (t.status || '').toUpperCase() === 'ACTIVE').slice(0, 3);
 
   return (
     <div>

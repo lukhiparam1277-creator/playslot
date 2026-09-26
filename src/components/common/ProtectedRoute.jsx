@@ -23,26 +23,35 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
-    // Role not authorized
-    return (
-      <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
-        <h2>Access Restricted</h2>
-        <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
-          Your current account role (<strong>{currentUser.role}</strong>) does not have permission to access this console.
-        </p>
-        <button
-          onClick={() => window.location.href = '/'}
-          className="btn btn-primary"
-          style={{ marginTop: '20px' }}
-        >
-          Return to Home
-        </button>
-      </div>
-    );
+    // Role not authorized - redirect to respective portal
+    if (currentUser.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else if (currentUser.role === 'turf_owner') {
+      return <Navigate to="/owner/dashboard" replace />;
+    } else {
+      return <Navigate to="/login" replace />;
+    }
   }
 
   return children;
 };
+
+export const AdminRoute = ({ children }) => (
+  <ProtectedRoute allowedRoles={['admin']}>
+    {children}
+  </ProtectedRoute>
+);
+
+export const OwnerRoute = ({ children }) => (
+  <ProtectedRoute allowedRoles={['turf_owner', 'admin']}>
+    {children}
+  </ProtectedRoute>
+);
+
+export const UserRoute = ({ children }) => (
+  <ProtectedRoute allowedRoles={['user', 'turf_owner', 'admin']}>
+    {children}
+  </ProtectedRoute>
+);
 
 export default ProtectedRoute;

@@ -47,29 +47,33 @@ export const VenueDetail = () => {
   };
 
   const handleConfirmReservation = () => {
-    const bookingPayload = {
-      turfId: turf.id,
-      turfName: turf.name,
-      turfImage: turf.images?.[0] || 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=800&q=80',
-      sport: turf.sport,
-      date: selectedDate,
-      timeSlot: selectedSlot,
-      playersCount,
-      basePrice,
-      convenienceFee,
-      gstAmount,
-      totalAmount,
-      userId: currentUser?.id || 'user-1',
-      userName: currentUser?.name || 'Rahul Sharma',
-      userEmail: currentUser?.email || 'user@playslot.com',
-      userPhone: currentUser?.phone || '+91 98765 43210',
-      paymentMethod: 'UPI Paid (Instant)'
-    };
+    try {
+      const bookingPayload = {
+        turfId: turf.id,
+        turfName: turf.name,
+        turfImage: turf.images?.[0] || 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=800&q=80',
+        sport: turf.sport,
+        date: selectedDate,
+        timeSlot: selectedSlot,
+        playersCount,
+        basePrice,
+        convenienceFee,
+        gstAmount,
+        totalAmount,
+        userId: currentUser?.id || 'user-1',
+        userName: currentUser?.name || 'Rahul Sharma',
+        userEmail: currentUser?.email || 'user@playslot.com',
+        userPhone: currentUser?.phone || '+91 98765 43210',
+        paymentMethod: 'UPI Paid (Instant)'
+      };
 
-    const newBooking = createBooking(bookingPayload);
-    setIsConfirmModalOpen(false);
-    showToast(`Slot confirmed for ${turf.name}! 🎟️`, 'success');
-    navigate('/booking-success', { state: { booking: newBooking } });
+      const newBooking = createBooking(bookingPayload);
+      setIsConfirmModalOpen(false);
+      showToast(`Slot confirmed for ${turf.name}! 🎟️`, 'success');
+      navigate('/booking-success', { state: { booking: newBooking } });
+    } catch (err) {
+      showToast(err.message || 'This slot has already been booked.', 'error');
+    }
   };
 
   return (

@@ -42,14 +42,14 @@ export const SlotPicker = ({ turf, onSelectSlot, selectedDate, selectedSlot, set
       </div>
 
       <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-        Available Slots ({currentSlots.filter(s => s.status === 'Available').length} open):
+        Available Slots ({currentSlots.filter(s => (s.status || '').toUpperCase() === 'AVAILABLE').length} open):
       </div>
 
       {/* Slots Grid */}
       <div className="slots-grid">
         {currentSlots.map((slot) => {
-          const isBooked = slot.status === 'Booked';
-          const isBlocked = slot.status === 'Blocked' || slot.status === 'Maintenance';
+          const isBooked = (slot.status || '').toUpperCase() === 'BOOKED';
+          const isBlocked = (slot.status || '').toUpperCase() === 'BLOCKED' || (slot.status || '').toUpperCase() === 'MAINTENANCE';
           const isSelected = selectedSlot === slot.time;
           const isDisabled = isBooked || isBlocked;
 
