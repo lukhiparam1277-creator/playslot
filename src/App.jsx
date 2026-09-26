@@ -112,9 +112,6 @@ export default function App() {
           <Route path="/owner/register" element={<OwnerRegister />} />
           <Route path="/owner/status" element={<OwnerStatus />} />
           <Route path="/owner/login" element={<OwnerLogin />} />
-
-          {/* 404 Fallback */}
-          <Route path="*" element={<NotFound />} />
         </Route>
 
         {/* ========================================= */}
@@ -144,7 +141,6 @@ export default function App() {
         {/* ========================================= */}
         {/* 3. SUPER ADMIN CONSOLE (AdminLayout)      */}
         {/* ========================================= */}
-        <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin"
@@ -154,6 +150,7 @@ export default function App() {
             </AdminRoute>
           }
         >
+          <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="owner-requests" element={<AdminOwnerRequests />} />
           <Route path="users" element={<AdminUsers />} />
@@ -164,6 +161,11 @@ export default function App() {
           <Route path="financial-reports" element={<AdminFinancialReports />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
+
+        {/* ========================================= */}
+        {/* 4. 404 FALLBACK CATCH-ALL                 */}
+        {/* ========================================= */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
