@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
 export const Navbar = () => {
-  const { currentUser, logout, switchRole } = useAuth();
+  const { currentUser, logout } = useAuth();
   const { showToast } = useToast();
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
@@ -53,39 +53,6 @@ export const Navbar = () => {
           </ul>
 
           <div className="nav-actions">
-            {/* Quick Demo Role Switcher */}
-            <select
-              value={currentUser?.role || 'guest'}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === 'admin') {
-                  switchRole('admin');
-                  navigate('/admin/dashboard');
-                  showToast('Switched to Super Admin Console 🛡️', 'success');
-                } else if (val === 'turf_owner') {
-                  switchRole('turf_owner');
-                  navigate('/owner/dashboard');
-                  showToast('Switched to Turf Owner Console 🏟️', 'success');
-                } else {
-                  switchRole('user');
-                  navigate('/my-bookings');
-                  showToast('Switched to Athlete User 👤', 'success');
-                }
-              }}
-              style={{
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                fontSize: '0.8rem',
-                fontWeight: '700',
-                background: '#F8FAFC',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="user">👤 Athlete (User)</option>
-              <option value="turf_owner">🏟️ Turf Owner</option>
-              <option value="admin">🛡️ Super Admin</option>
-            </select>
 
             {currentUser ? (
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
